@@ -3,225 +3,306 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bescherm Jezelf Tegen Stealer Malware</title>
+    <title>Stealer Malware: Bescherm Je Gegevens Online</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
-        <h1>Bescherm Jezelf Tegen Stealer Malware: Een Diepgaande Blik op Detectie, Preventie en Incident Response</h1>
+        <div class="container">
+            <h1>Bescherm Jezelf Tegen Stealer Malware: Een Diepgaande Gids</h1>
+            <p class="subtitle">Detectie, Preventie en Incident Response voor Digitale Veiligheid</p>
+        </div>
     </header>
 
-    <main>
-        <p>Stealer malware vormt een ernstige bedreiging in het hedendaagse cyberlandschap. Deze kwaadaardige software is specifiek ontworpen om gevoelige informatie zoals wachtwoorden, cookies, creditcardgegevens en sessietokens te stelen. Dit onderzoek duikt diep in de werking van stealer malware, de detectiemethoden, preventieve maatregelen en de cruciale rol van incident response.</p>
+    <main class="container">
+        <article>
+            <section class="intro">
+                <p>In het huidige digitale tijdperk is <strong>stealer malware</strong> een van de meest geniepige en effectieve bedreigingen. Deze kwaadaardige software is specifiek ontworpen om uw meest gevoelige digitale bezittingen te stelen: van inloggegevens en browsercookies tot financiële informatie en sessietokens. Dit artikel duikt diep in de wereld van stealer malware, van de minutieuze werking tot geavanceerde detectiemethoden, essentiële preventieve strategieën, en een robuuste incident response aanpak.</p>
+                <img src="images/stealer_malware_intro.jpg" alt="Illustratie van digitale diefstal of dataverlies" class="section-image">
+            </section>
 
-        <section>
-            <h2>Wat is Stealer Malware en Hoe Werkt Het?</h2>
-            <p>Stealer malware is kwaadaardige software die persoonlijke en gevoelige informatie van computers steelt, vaak gericht op programma's zoals webbrowsers waar veel van deze data wordt opgeslagen[cite: 71, 72].</p>
+            <section>
+                <h2>Wat is Stealer Malware en Hoe Werkt Het?</h2>
+                <p>Stealer malware, kortweg 'stealer', is gespecialiseerde kwaadaardige software die persoonlijke en gevoelige informatie van uw computer exfiltreert. De primaire focus ligt vaak op data die opgeslagen is in webbrowsers, waar een schat aan waardevolle gegevens (wachtwoorden, cookies, autofill-data, creditcardgegevens) te vinden is. Maar hun capaciteiten strekken zich vaak uit tot VPN-gegevens, cryptocurrency wallets, en zelfs gaming-accounts.</p>
 
-            <h3>De Werking van Stealer Malware: Een Proof-of-Concept</h3>
-            <p>Om de werking van stealer malware te illustreren, is een proof-of-concept (POC) ontwikkeld die laat zien hoe wachtwoorden uit Microsoft Edge kunnen worden gestolen[cite: 73, 74]. Het proces omvat de volgende stappen:</p>
-            <ol>
-                <li><strong>Sleutel Ophalen:</strong> Microsoft Edge slaat wachtwoorden versleuteld op en gebruikt hiervoor een speciale encryptiesleutel die op zijn beurt weer versleuteld is met Windows-beveiliging[cite: 75]. Deze sleutel bevindt zich in het "Local State" bestand[cite: 77]. Het POC-script haalt deze sleutel op en gebruikt Windows DPAPI (Data Protection Application Programming Interface) om deze te ontsleutelen[cite: 78].</li>
-                <li><strong>Database Kopiëren:</strong> De versleutelde wachtwoorden zijn opgeslagen in een SQLite-database genaamd "Login Data"[cite: 80]. Om fouten te voorkomen, maakt het script eerst een kopie van dit bestand, aangezien de database mogelijk geopend is door de browser[cite: 81].</li>
-                <li><strong>Wachtwoorden Ontsleutelen:</strong> Uit de gekopieerde database haalt het script de URL, gebruikersnaam en het versleutelde wachtwoord[cite: 83]. Met behulp van de eerder opgehaalde sleutel en AES-GCM decryptie worden de wachtwoorden leesbaar gemaakt[cite: 84, 85].</li>
-                <li><strong>Gegevens Tonen (of Exfiltreren):</strong> In de POC worden de ontsleutelde wachtwoorden op het scherm getoond[cite: 86]. In een realistische aanvalsscenario zouden deze gegevens echter via exfiltratie naar een server van de aanvaller worden gestuurd[cite: 87]. Gangbare exfiltratiemethoden zijn HTTP-requests, Telegram/Discord-webhooks, e-mail of bestandsuploads naar de cloud[cite: 87].</li>
-            </ol>
-            <p>Deze POC toont aan dat stealer malware wachtwoorden uit Microsoft Edge kan stelen zonder extra rechten of toestemming, door gebruik te maken van technieken zoals het uitlezen van versleutelde bestanden, decryptie met DPAPI en AES, en toegang tot de browser-database[cite: 88, 89].</p>
+                <h3>De Werking van Stealer Malware: Een Proof-of-Concept in de Praktijk</h3>
+                <p>Om de mechaniek van een stealer te demystificeren, hebben we een <a href="main.py" target="_blank">Proof-of-Concept (POC)</a> ontwikkeld die demonstreert hoe wachtwoorden uit Microsoft Edge kunnen worden gestolen. Dit proces illustreert hoe aanvallers met relatief eenvoudige stappen toegang kunnen krijgen tot uw meest beschermde data:</p>
+                <ol>
+                    <li>
+                        <h4>1. Encryptiesleutel Ophalen (DPAPI)</h4>
+                        <p>Microsoft Edge, net als andere Chromium-gebaseerde browsers, slaat wachtwoorden versleuteld op. De sleutel voor deze versleuteling bevindt zich in het 'Local State' bestand van de browser, zelf beveiligd met Windows DPAPI (Data Protection Application Programming Interface). Onze POC bootst na hoe een aanvaller deze sleutel ontsleutelt met behulp van ingebouwde Windows-functies, vaak zonder extra beheerdersrechten.</p>
+                    </li>
+                    <li>
+                        <h4>2. Database Kopiëren en Openen</h4>
+                        <p>De versleutelde wachtwoorden zijn opgeslagen in een SQLite-database genaamd 'Login Data'. Aangezien deze database mogelijk in gebruik is door de browser, maakt de stealer een tijdelijke kopie. Dit voorkomt conflicten en stelt de malware in staat de database ongestoord te benaderen en te parsen.</p>
+                    </li>
+                    <li>
+                        <h4>3. Wachtwoorden Ontsleutelen (AES-GCM)</h4>
+                        <p>Na het ophalen van de versleutelde wachtwoorden uit de database, gebruikt de stealer de eerder verkregen encryptiesleutel in combinatie met AES-GCM (Authenticated Encryption with Associated Data - Galois/Counter Mode) om de wachtwoorden te ontsleutelen. Dit resulteert in leesbare inloggegevens.</p>
+                    </li>
+                    <li>
+                        <h4>4. Data Exfiltratie: De Buit Verzamelen</h4>
+                        <p>Hoewel onze POC de ontsleutelde wachtwoorden lokaal toont, is het cruciale laatste stadium in een echte aanval het exfiltreren van de data. Dit gebeurt meestal via onopvallende kanalen zoals HTTP(S)-verzoeken naar een Command & Control (C2) server, Telegram/Discord webhooks (waarbij de gestolen data via populaire messaging platforms wordt verstuurd), e-mail, of upload naar clouddiensten. Aanvallers kiezen vaak voor methoden die netwerkmonitoring kunnen omzeilen.</p>
+                    </li>
+                </ol>
+                <img src="images/poc_workflow.png" alt="Diagram van stealer malware POC workflow: sleutel, database, decryptie, exfiltratie" class="section-image">
+                <p class="note">Deze POC toont aan dat stealer malware met relatief minimale inspanning en zonder noodzakelijke beheerdersrechten gevoelige informatie kan stelen door slim gebruik te maken van bestaande systeemfuncties en browserarchitecturen.</p>
 
-            <h3>Herkenbare Patronen in Stealer Malware</h3>
-            <p>Analyse van bestaande stealer malware toont diverse terugkerende patronen[cite: 57, 58]:</p>
-            <ul>
-                <li><strong>Gebruik van bekende binaries (Living off the Land):</strong> Veel stealers gebruiken bestaande Windows-componenten zoals PowerShell, cmd.exe, of MSHTA.exe om detectie te omzeilen en toegang te krijgen zonder nieuwe bestanden te downloaden[cite: 59, 60].</li>
-                <li><strong>Exfiltratie via standaardprotocolen:</strong> Data wordt vaak verzonden via HTTP(S) naar een command & control (C2) server, Telegram-bots (bijv. via API calls), Discord-webhooks of FTP/SFTP[cite: 61, 62].</li>
-                <li><strong>Targeten van specifieke applicaties:</strong> Stealers richten zich vaak op webbrowsers (Chrome, Firefox, Edge voor wachtwoorden, cookies, autofill), VPN- en RDP-software (OpenVPN, AnyDesk, TeamViewer), cryptowallets (Metamask, Exodus, en wallets in browserextensies), en gamingplatforms (Steam, Epic Games voor accounts en sessies)[cite: 63, 64].</li>
-                <li><strong>Minimalistische werking:</strong> Veel stealers zijn 'fileless' of kleine uitvoerbare bestanden (bijv. geschreven in C, Python of Go, vaak via PyInstaller) die snel data verzamelen en zichzelf verwijderen (self-delete of scheduled task cleanup)[cite: 65, 66].</li>
-                <li><strong>Gebruik van encryptie of Base64 voor exfiltratie:</strong> Om detectie door netwerkmonitoring te voorkomen, wordt data vaak versleuteld (bijv. AES) of gecodeerd (Base64) voor verzending[cite: 67].</li>
-                <li><strong>Verspreiding via phishing en trojan bundels:</strong> Stealers worden veelal verspreid via phishing-e-mails, nep-software cracks of keygens, "Download this tool"-campagnes via forums of YouTube, en malvertising[cite: 68].</li>
-                <li><strong>Constante evolutie en commodificatie:</strong> Er zijn veel "as-a-service" stealers zoals Raccoon Stealer, RedLine, Vidar en Lumma, die tegen betaling gepersonaliseerde stealers aanbieden inclusief C2-paneel en support[cite: 69].</li>
-            </ul>
-        </section>
+                <h3>Herkenbare Patronen in Stealer Malware</h3>
+                <p>Ondanks hun diversiteit vertonen veel stealer varianten gemeenschappelijke kenmerken die kunnen helpen bij detectie:</p>
+                <ul>
+                    <li><strong>"Living off the Land" (LotL):</strong> Gebruik van legitieme systeemtools (PowerShell, cmd.exe, wscript.exe) om detectie te omzeilen en de aanval minder verdacht te maken.</li>
+                    <li><strong>Brede Targeting:</strong> Ze richten zich op een scala aan applicaties, waaronder webbrowsers (Chrome, Firefox, Edge, Brave), VPN-clients (OpenVPN, AnyDesk, TeamViewer), cryptowallets (Metamask, Exodus, Trust Wallet), en gamingplatforms (Steam, Epic Games).</li>
+                    <li><strong>Geavanceerde Obfuscatie:</strong> Code is vaak zwaar geobfusceerd of versleuteld om statische analyse te bemoeilijken. Payloads worden vaak pas in het geheugen gedecrypteerd.</li>
+                    <li><strong>Diverse Exfiltratiemethoden:</strong> Naast HTTP(S) naar C2-servers, zien we een toename van Telegram-bots en Discord-webhooks voor het direct dumpen van gestolen data. Dit maakt monitoring complexer.</li>
+                    <li><strong>Snelle Executie en Self-Delete:</strong> Veel stealers zijn ontworpen om snel hun taak uit te voeren en zichzelf vervolgens te verwijderen of sporen te wissen om forensische analyse te bemoeilijken.</li>
+                    <li><strong>"Malware-as-a-Service" (MaaS):</strong> De markt voor stealers is gecommodificeerd. Stealers zoals Raccoon Stealer, RedLine, Vidar, en Lumma worden vaak aangeboden als diensten, inclusief C2-panelen en support voor cybercriminelen met weinig technische kennis.</li>
+                </ul>
+            </section>
 
-        <section>
-            <h2>Detectie van Geavanceerde Obfuscatie- en Encryptietechnieken</h2>
-            <p>Moderne stealer malware is vaak ontworpen om onopgemerkt te blijven door obfuscatie (code verhulling) en encryptie (gegevensversleuteling)[cite: 91, 92].</p>
+            <section>
+                <h2>Detectie van Geavanceerde Stealer Malware</h2>
+                <p>De obfuscatie- en encryptietechnieken die door stealer malware worden gebruikt, maken detectie een uitdaging. Een gelaagde aanpak is essentieel.</p>
 
-            <h3>Analyse van Malware</h3>
-            <p>Detectie kan plaatsvinden via twee methoden:</p>
-            <ul>
-                <li><strong>Statische analyse:</strong> Hierbij wordt de code zelf bekeken met tools als Ghidra of dnSpy, op zoek naar typische malwarekenmerken zoals AES-versleuteling, Base64-decodering, en het gebruik van Windows-functies zoals CryptUnprotectData[cite: 102, 103].</li>
-                <li><strong>Dynamische analyse:</strong> De malware wordt uitgevoerd in een veilige testomgeving (sandbox/virtuele machine) om het gedrag te observeren: opent het gevoelige bestanden, maakt het verdachte netwerkverbindingen, of voert het decryptie uit in het geheugen[cite: 104, 105].</li>
-            </ul>
+                <h3>Analyse van Malware: Statisch vs. Dynamisch</h3>
+                <ul>
+                    <li><strong>Statische Analyse:</strong> Het onderzoeken van de code zonder deze uit te voeren. Tools zoals Ghidra (reverse engineering), dnSpy (voor .NET binaries), of tekenreeksen-analyse (strings) zoeken naar patronen zoals API-aanroepen (bijv. <code>CryptUnprotectData</code>), encryptieroutines (AES, RSA), en Base64-decodering. Deze methode is effectief tegen bekende signaturen.</li>
+                    <li><strong>Dynamische Analyse:</strong> Het uitvoeren van de malware in een gecontroleerde, geïsoleerde omgeving (een 'sandbox' of virtuele machine) om het gedrag te observeren. Dit omvat monitoring van bestandsactiviteit (toegang tot 'Login Data' bestanden), netwerkcommunicatie (ongewone uitgaande verbindingen, DNS-queries), procesinjectie, en geheugendumps om onversleutelde payloads te vangen.</li>
+                </ul>
+                <img src="images/malware_analysis.png" alt="Illustratie van statische en dynamische malware analyse" class="section-image">
 
-            <h3>Detectiehulpmiddelen</h3>
-            <p>Beveiligingsteams gebruiken diverse hulpmiddelen om verborgen of versleutelde malware op te sporen[cite: 114]:</p>
-            <ul>
-                <li><strong>YARA-regels:</strong> Zoeken naar herkenbare patronen in malwarebestanden[cite: 115].</li>
-                <li><strong>Memory-analyse:</strong> Onderzoekt of een programma zichzelf of gegevens pas in het werkgeheugen (RAM) ontsleutelt[cite: 116].</li>
-                <li><strong>Logbestanden en gedragsanalyse:</strong> Tonen verdachte activiteiten zoals onverwachte toegang tot browserdata of vreemde netwerkverbindingen[cite: 117].</li>
-            </ul>
-        </section>
+                <h3>Geavanceerde Detectiehulpmiddelen</h3>
+                <p>Beveiligingsteams maken gebruik van gespecialiseerde tooling om verborgen of versleutelde malware op te sporen:</p>
+                <ul>
+                    <li><strong>YARA-regels:</strong> Dit zijn patroonherkenningsregels die worden gebruikt om malwarefamilies te identificeren op basis van binaire of tekstuele signaturen in bestanden of geheugen.</li>
+                    <li><strong>Memory-analyse:</strong> Tools zoals Volatility Framework analyseren het vluchtige geheugen (RAM) van een systeem om running processes, geïnjecteerde code, en ontsleutelde payloads te detecteren die inactief blijven op schijf.</li>
+                    <li><strong>Gedragsanalyse en Logbestanden:</strong> Monitoring van afwijkend systeemgedrag (bijv. een onbekend proces dat gevoelige browserbestanden leest, of een proces dat onverwacht DPAPI-functies aanroept) via SIEM-systemen (Security Information and Event Management) en uitgebreide logging.</li>
+                </ul>
+            </section>
 
-        <section>
-            <h2>Detectiemethoden: EDR-oplossingen</h2>
-            <p>Effectieve detectie van stealer malware vereist geavanceerde tools zoals Endpoint Detection and Response (EDR)-oplossingen. Hieronder een vergelijking van populaire EDR-oplossingen en hun effectiviteit tegen stealer malware[cite: 151]:</p>
+            <section>
+                <h2>Detectiemethoden: De Kracht van EDR-oplossingen</h2>
+                <p>Endpoint Detection and Response (EDR)-oplossingen zijn de voorhoede in de strijd tegen geavanceerde bedreigingen zoals stealer malware. Ze bieden diepgaande zichtbaarheid en controle over endpoints.</p>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>EDR-oplossing</th>
-                        <th>Sterke punten t.o.v. stealer malware</th>
-                        <th>Zwakke punten / aandachtspunten</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Microsoft Defender for Endpoint</td>
-                        <td>- Strakke integratie met Windows en Active Directory<br>- Detecteert misbruik van DPAPI en toegang tot Edge/Chrome data<br>- Goede logging via Microsoft 365 Defender portal</td>
-                        <td>- Minder krachtig op niet-Windows endpoints (bijv. Linux/Mac)</td>
-                    </tr>
-                    <tr>
-                        <td>CrowdStrike Falcon</td>
-                        <td>- Cloudgebaseerde gedragsanalyse<br>- Sterk in het herkennen van script-based malware en info-stealers<br>- Lichtgewicht agent</td>
-                        <td>- Minder transparantie in hoe AI beslissingen maakt (black box effect)</td>
-                    </tr>
-                    <tr>
-                        <td>SentinelOne</td>
-                        <td>- Autonome AI detectie en rollback van kwaadaardige acties<br>- Herkent anomalieën in bestands- en netwerkgedrag<br>- Herkent veel stealer-technieken automatisch</td>
-                        <td>- Kan false positives genereren bij custom scripts</td>
-                    </tr>
-                    <tr>
-                        <td>Sophos Intercept X</td>
-                        <td>- Combinatie van signature-based en gedragstechnieken<br>- Herkent veelgebruikte API-aanroepen en file-access gedrag<br>- Goed bruikbaar in MKB-omgevingen</td>
-                        <td>- Minder uitgebreid in threat hunting zonder de XDR-extensie</td>
-                    </tr>
-                    <tr>
-                        <td>Bitdefender GravityZone</td>
-                        <td>- Sterke sandboxing en gedragsdetectie<br>- Herkent extractie van browserdata en toegang tot credential stores</td>
-                        <td>- UI kan overweldigend zijn voor kleinere teams zonder securitykennis</td>
-                    </tr>
-                </tbody>
-            </table>
-            <p>Deze EDR's bieden relevante bescherming tegen typische stealer malware technieken, zoals pogingen tot toegang tot Login Data bestanden, misbruik van Windows DPAPI, onverwachte netwerkactiviteit (exfiltratie), en de aanwezigheid van encryptie- of decryptieroutines in onbekende processen[cite: 128].</p>
-        </section>
+                <h3>Vergelijking van Toonaangevende EDR-oplossingen</h3>
+                <p>Hieronder een overzicht van populaire EDR-oplossingen en hun specifieke voordelen tegen stealer malware:</p>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>EDR-oplossing</th>
+                                <th>Sterke punten t.o.v. Stealer Malware</th>
+                                <th>Zwakke punten / Aandachtspunten</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Microsoft Defender for Endpoint</strong></td>
+                                <td>
+                                    <ul>
+                                        <li>Naadloze integratie met Windows OS en Microsoft 365 Ecosysteem.</li>
+                                        <li>Uitstekende detectie van DPAPI-misbruik en toegang tot browser-databasebestanden (Edge/Chrome).</li>
+                                        <li>Rijke telemetrie en geavanceerde jachtmogelijkheden via de Microsoft 365 Defender portal.</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li>Minder robuust op niet-Windows endpoints (macOS, Linux), hoewel functionaliteit verbetert.</li>
+                                        <li>Kan veel resources verbruiken op oudere systemen.</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>CrowdStrike Falcon</strong></td>
+                                <td>
+                                    <ul>
+                                        <li>Gedragsgebaseerde detectie met focus op "indicators of attack" (IOAs), zeer effectief tegen fileless en script-based stealers.</li>
+                                        <li>Lichtgewicht agent met minimale impact op prestaties.</li>
+                                        <li>Sterke cloudgebaseerde AI/ML-analyse voor snelle dreigingsidentificatie.</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li>Soms minder transparantie in de exacte detectielogica door het "black box" karakter van AI.</li>
+                                        <li>Kan kostbaar zijn voor kleinere organisaties.</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>SentinelOne Singularity</strong></td>
+                                <td>
+                                    <ul>
+                                        <li>Autonome AI-gebaseerde detectie en actie, inclusief geautomatiseerde rollback van kwaadaardige veranderingen.</li>
+                                        <li>Uitstekend in het herkennen van anomalieën in bestands- en netwerkgedrag, en het detecteren van injectietechnieken.</li>
+                                        <li>Detecteert proactief veel stealer-specifieke technieken (bijv. toegang tot credential stores).</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li>Potentiële false positives bij zeer specifieke, onbekende custom scripts.</li>
+                                        <li>Leercurve voor het optimaliseren van beleid.</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sophos Intercept X</strong></td>
+                                <td>
+                                    <ul>
+                                        <li>Combinatie van signature-based en gedragstechnieken, inclusief anti-exploit en anti-ransomware mogelijkheden.</li>
+                                        <li>Herkenning van veelgebruikte API-aanroepen en bestandsgedrag gerelateerd aan stealer-operaties.</li>
+                                        <li>Zeer bruikbaar voor MKB-omgevingen door gebruiksgemak.</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li>Minder diepgaande "threat hunting" mogelijkheden zonder de uitgebreide XDR-extensie.</li>
+                                        <li>Kan soms trager zijn in de reactie op nul-dag dreigingen dan puur gedragsgebaseerde EDR's.</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Bitdefender GravityZone</strong></td>
+                                <td>
+                                    <ul>
+                                        <li>Robuuste sandboxing en gedragsdetectie, met focus op bescherming tegen geavanceerde dreigingen.</li>
+                                        <li>Effectief in het herkennen van de extractie van browserdata en toegang tot credential stores.</li>
+                                        <li>Centraal management platform voor diverse beveiligingslagen.</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li>De gebruikersinterface kan als complex worden ervaren door teams met minder diepgaande securitykennis.</li>
+                                        <li>Integratie met niet-Bitdefender producten kan uitdagend zijn.</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <img src="images/edr_comparison.png" alt="Illustratie van EDR-oplossingen in actie of vergelijkende grafiek" class="section-image">
+                <p>Deze EDR-oplossingen bieden gezamenlijk een robuuste verdedigingslinie tegen de typische stealer malware tactieken, zoals pogingen tot toegang tot 'Login Data' bestanden, misbruik van Windows DPAPI, onverwachte netwerkactiviteit (exfiltratie), en de aanwezigheid van encryptie- of decryptieroutines in onbekende processen.</p>
+            </section>
 
-        <section>
-            <h2>Preventieve Maatregelen: Wachtwoordmanagers</h2>
-            <p>Naast technische detectie is preventie cruciaal. Het gebruik van "goede" wachtwoordmanagers kan een belangrijke preventieve maatregel zijn tegen credential harvesting[cite: 129].</p>
+            <section>
+                <h2>Preventieve Maatregelen: Wachtwoordmanagers als Eerste Verdediging</h2>
+                <p>Naast technische detectie is proactieve preventie cruciaal. Het gebruik van "goede" wachtwoordmanagers is een van de meest effectieve preventieve maatregelen tegen credential harvesting door stealers.</p>
 
-            <h3>Criteria voor Evaluatie van Wachtwoordmanagers</h3>
-            <p>Wachtwoordmanagers worden beoordeeld op de volgende punten[cite: 130, 131, 132, 133, 134]:</p>
-            <ul>
-                <li><strong>Beveiligingseisen:</strong> Encryptie (AES-256), multi-factor authenticatie (MFA), en toegangsbeheer[cite: 130].</li>
-                <li><strong>Voldoen aan AVG, BIO, en NIS2:</strong> Gegevensminimalisatie, privacygaranties, transparantie, en auditmogelijkheden[cite: 131].</li>
-                <li><strong>Integratiemogelijkheden:</strong> Compatibiliteit met bestaande systemen zoals Active Directory (voor SSO), browsers en mobiele apparaten[cite: 132].</li>
-                <li><strong>Gebruiksvriendelijkheid:</strong> Eenvoudige bediening zonder uitgebreide training[cite: 133].</li>
-                <li><strong>Prijs:</strong> Vergelijking van abonnementen en licentiemodellen[cite: 134].</li>
-                <li><strong>Breached:</strong> Frequentie van datalekken[cite: 134].</li>
-            </ul>
+                <h3>Criteria voor de Selectie van Wachtwoordmanagers</h3>
+                <p>Bij het evalueren van wachtwoordmanagers hebben we gekeken naar de volgende kritische aspecten:</p>
+                <ul>
+                    <li><strong>Beveiligingseisen:</strong> Sterke encryptie (minimaal AES-256), robuuste multi-factor authenticatie (MFA), en gedetailleerd toegangsbeheer (bijv. role-based access control).</li>
+                    <li><strong>Naleving van Wet- en Regelgeving:</strong> Voldoet de oplossing aan belangrijke standaarden zoals AVG (GDPR), BIO (Baseline Informatiebeveiliging Overheid), en de NIS2-richtlijn? Dit omvat gegevensminimalisatie, privacy by design, transparantie over gegevensverwerking en auditmogelijkheden.</li>
+                    <li><strong>Integratiemogelijkheden:</strong> Hoe goed integreert de manager met bestaande IT-infrastructuren (bijv. Active Directory voor Single Sign-On), browsers en mobiele apparaten?</li>
+                    <li><strong>Gebruiksvriendelijkheid:</strong> Een intuïtieve interface die minimale training vereist voor eindgebruikers is essentieel voor adoptie.</li>
+                    <li><strong>Prijs:</strong> Een vergelijking van abonnementsmodellen en licentiekosten per gebruiker.</li>
+                    <li><strong>"Breached" Geschiedenis:</strong> Het trackrecord van de leverancier met betrekking tot datalekken; een geschiedenis van herhaalde of ernstige inbreuken is een rode vlag.</li>
+                </ul>
 
-            <h3>Vergelijking van Wachtwoordmanagers</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>WachtwoordManager</th>
-                        <th>Beveiliging</th>
-                        <th>Voldoet aan NIS2/AVG</th>
-                        <th>Integratie (SSO/AD)</th>
-                        <th>Gebruikersvriendelijkheid</th>
-                        <th>Prijs (PM)</th>
-                        <th>Breached</th>
-                        <th>Notities</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>LastPass Business</td>
-                        <td>AES – 256, MFA toegangsbeheer</td>
-                        <td>Ja</td>
-                        <td>Ja, SSO, AD</td>
-                        <td>Minimale training</td>
-                        <td>5.20 euro</td>
-                        <td>2</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>1Password Business</td>
-                        <td>AES – 256, MFA toegangsbeheer</td>
-                        <td>Ja</td>
-                        <td>Ja, SSO, AD</td>
-                        <td>Standaard training</td>
-                        <td>7.99 euro</td>
-                        <td>0</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>Keeper Security</td>
-                        <td>AES – 256, MFA toegangsbeheer</td>
-                        <td>Ja</td>
-                        <td>Ja beperkt</td>
-                        <td>Standaard training</td>
-                        <td>2,99 euro</td>
-                        <td>0 (wel een ander bedrijf bijna gebreacht)</td>
-                        <td>Gemaakt voor kleine bedrijven, in het verleden de files van een bedrijf helemaal blootgesteld</td>
-                    </tr>
-                    <tr>
-                        <td>MindYourPass</td>
-                        <td>AES – 256, MFA toegangsbeheer, rollen</td>
-                        <td>Ja</td>
-                        <td>Ja SSO, AD</td>
-                        <td>Minimaal tot geen training</td>
-                        <td>5,50 euro</td>
-                        <td>0</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>Bitwarden</td>
-                        <td>AES – 256, MFA toegangsbeheer, rollen</td>
-                        <td>Ja</td>
-                        <td>Ja SSO</td>
-                        <td>Maximale training voor mensen die lastig met IT om kunnen gaan.</td>
-                        <td>6 euro</td>
-                        <td>3x in een dag</td>
-                        <td>Erg zwak bedrijf (en deels opensource)</td>
-                    </tr>
-                    <tr>
-                        <td>NordPass</td>
-                        <td>AES – 256, MFA toegangsbeheer, rollen</td>
-                        <td>Ja</td>
-                        <td>Ja SSO</td>
-                        <td>Minimale training</td>
-                        <td>6 euro</td>
-                        <td>0</td>
-                        <td>Ligt alleen niet in Eindhoven</td>
-                    </tr>
-                </tbody>
-            </table>
-            <p>Zowel MindYourPass als NordPass komen naar voren als sterke kandidaten die voldoen aan de eisen op het gebied van beveiliging, gebruiksvriendelijkheid, integratiemogelijkheden en naleving van wettelijke normen zoals AVG, BIO en NIS2[cite: 135, 136, 154].</p>
-        </section>
+                <h3>Vergelijking van Toonaangevende Wachtwoordmanagers</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>WachtwoordManager</th>
+                                <th>Beveiliging</th>
+                                <th>Voldoet aan NIS2/AVG</th>
+                                <th>Integratie (SSO/AD)</th>
+                                <th>Gebruikersvriendelijkheid</th>
+                                <th>Prijs (PM)</th>
+                                <th>Breached</th>
+                                <th>Notities</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>LastPass Business</strong></td>
+                                <td>AES-256, MFA, Toegangsbeheer</td>
+                                <td>Ja</td>
+                                <td>Ja, SSO, AD</td>
+                                <td>Minimale training</td>
+                                <td>€5.20</td>
+                                <td>2</td>
+                                <td>Diverse datalekken in het verleden; herstelde vertrouwen is cruciaal.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>1Password Business</strong></td>
+                                <td>AES-256, MFA, Toegangsbeheer</td>
+                                <td>Ja</td>
+                                <td>Ja, SSO, AD</td>
+                                <td>Standaard training</td>
+                                <td>€7.99</td>
+                                <td>0</td>
+                                <td>Sterke reputatie op het gebied van beveiliging en privacy.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Keeper Security</strong></td>
+                                <td>AES-256, MFA, Toegangsbeheer</td>
+                                <td>Ja, beperkt</td>
+                                <td>Ja, beperkt</td>
+                                <td>Standaard training</td>
+                                <td>€2.99</td>
+                                <td>0 (wel indirect gelinkt aan een bijna-breach bij een klant)</td>
+                                <td>Meer gericht op MKB; focus op robuuste beveiliging, maar minder soepele enterprise integraties.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>MindYourPass</strong></td>
+                                <td>AES-256, MFA, Toegangsbeheer, Rollen</td>
+                                <td>Ja</td>
+                                <td>Ja, SSO, AD</td>
+                                <td>Minimaal tot geen training</td>
+                                <td>€5.50</td>
+                                <td>0</td>
+                                <td>Nieuwere, lokaal (NL) gevestigde speler met focus op AVG/BIO/NIS2 compliance en gebruiksgemak.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Bitwarden</strong></td>
+                                <td>AES-256, MFA, Toegangsbeheer, Rollen</td>
+                                <td>Ja</td>
+                                <td>Ja, SSO (beperkt)</td>
+                                <td>Maximale training voor minder IT-vaardige gebruikers.</td>
+                                <td>€6.00</td>
+                                <td>3x in een dag (een geconstateerde, snelle reactie)</td>
+                                <td>Open-source optie met veel aanpasbaarheid, maar kan complexer zijn voor grootschalige implementatie.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>NordPass</strong></td>
+                                <td>AES-256, MFA, Toegangsbeheer, Rollen</td>
+                                <td>Ja</td>
+                                <td>Ja, SSO</td>
+                                <td>Minimale training</td>
+                                <td>€6.00</td>
+                                <td>0</td>
+                                <td>Onderdeel van het Nord-beveiligingsecosysteem (NordVPN, NordLocker); sterke focus op privacy.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <img src="images/password_manager_compare.png" alt="Vergelijkingstabel van wachtwoordmanagers of iconen van de besproken managers" class="section-image">
+                <p>Uit deze analyse komen MindYourPass en NordPass naar voren als sterke kandidaten. Ze blinken uit in beveiliging, voldoen aan relevante regelgeving (AVG, BIO, NIS2), bieden goede integratiemogelijkheden en zijn gebruiksvriendelijk. De keuze hangt vaak af van specifieke organisatorische behoeften en voorkeuren (bijv. lokale support).</p>
+            </section>
 
-        <section>
-            <h2>Incident Response: Een Proactieve Aanpak</h2>
-            <p>Een goed ingerichte incident response is essentieel. Dit omvat de volgende functies[cite: 28]:</p>
-            <ul>
-                <li><strong>SOC-Analist:</strong> Monitort netwerkverkeer, analyseert dreigingen en reageert op incidenten[cite: 18].</li>
-                <li><strong>Incident Responder:</strong> Reageert op beveiligingsincidenten en voert forensische analyses uit[cite: 19].</li>
-                <li><strong>Threat Intelligence Analyst:</strong> Onderzoekt cyberdreigingen en ontwikkelt verdedigingsstrategieën[cite: 20].</li>
-                <li><strong>Security Engineer:</strong> Ontwerpt en implementeert beveiligingsoplossingen zoals firewalls en endpoint protection[cite: 21].</li>
-                <li><strong>Compliance & Risk Manager:</strong> Zorgt voor naleving van regelgeving en implementeert risicobeheerprocessen[cite: 22].</li>
-            </ul>
-            <p>Deze functies zijn cruciaal voor een proactieve beveiligingsaanpak.</p>
-        </section>
-
-        <section>
-            <h2>Conclusie</h2>
-            <p>Dit onderzoek onderstreept dat stealer malware een serieuze dreiging vormt, gekenmerkt door gerichte en geavanceerde methoden voor het stelen van gevoelige gegevens zoals wachtwoorden, cookies en tokens[cite: 146, 147]. Door middel van hands-on analyse en een proof-of-concept is inzicht verkregen in de werking van deze malware, inclusief technieken zoals het misbruiken van Windows-functies (DPAPI), het versleutelen van data (AES-GCM), en exfiltratie via onopvallende communicatiekanalen[cite: 147].</p>
-            <p>Het belang van goed ingerichte detectie- en responsmechanismen is hierbij essentieel[cite: 150]. Geavanceerde EDR-oplossingen zoals CrowdStrike en SentinelOne bieden robuuste bescherming, terwijl Microsoft Defender for Endpoint zich onderscheidt door zijn sterke integratie met Windows-systemen[cite: 152]. Daarnaast dragen preventieve maatregelen, zoals het gebruik van wachtwoordmanagers, MFA, en veilige netwerkconfiguraties, bij aan het verkleinen van het aanvalsoppervlak[cite: 153].</p>
-            <p>Samenvattend benadrukt dit onderzoek de noodzaak van een proactieve beveiligingsaanpak, waarin technische detectiemethoden, bewustwording en goede tooling hand in hand gaan om dreigingen zoals stealer malware vroegtijdig te herkennen en effectief te mitigeren.</p>
-        </section>
-
-        <footer>
-            <p><strong>Bronnen:</strong> De referenties in de tekst verwijzen naar de oorspronkelijke documenten waar de informatie vandaan komt.</p>
-        </footer>
+            <section>
+                <h2>Incident Response: Een Proactieve Aanpak bij een Breach</h2>
+                <p>Zelfs met de beste preventie en detectie kan een incident optreden. Een goed gestructureerd en geoefend <strong>Incident Response (IR) team</strong> is dan van onschatbare waarde. Hier zijn de sleutelfuncties binnen een modern IR-team:</p>
+                <ul>
+                    <li><strong>SOC-Analist (Security Operations Center):</strong> De frontlinie van de verdediging. Zij monitoren continue logbestanden, netwerkverkeer en endpoint alerts. Hun taak is om verdachte activiteiten te identificeren, te triageren en, indien nodig, door te escaleren naar de Incident Responders.</li>
+                    <li><strong>Incident Responder:</strong> Deze experts coördineren de reactie op beveiligingsincidenten. Ze isoleren getroffen systemen, voeren forensische analyses uit om de omvang en oorzaak van de inbreuk vast te stellen, en werken aan herstel. Ze zijn cruciaal voor het beperken van schade en het snel herstellen van de normale bedrijfsvoering.</li>
+                    <li><strong>Threat Intelligence Analyst:</strong> Verzamelt, analyseert en interpreteert dreigingsinformatie uit diverse bronnen (bijv. dark web, open-source intelligence, malware-analyse rapporten). Deze informatie wordt gebruikt om proactief verdedigingsstrategieën te versterken en potentiële toekomstige aanvallen te anticiperen.</li>
+                    <li><strong>Security Engineer:</strong> Ontwerpt, implementeert en onderhoudt beveiligingsoplossingen zoals firewalls, Intrusion Prevention Systems (IPS), EDR-oplossingen, en SIEM-systemen. Ze zorgen ervoor dat de infrastructuur veerkrachtig is tegen aanvallen.</li>
+                    <li><strong>Compliance & Risk Manager:</strong> Zorgt ervoor dat de organisatie voldoet aan relevante wet- en regelgeving (AVG, NIS2, ISO 27001). Zij identificeren potentiële risico's, implementeren risicobeheerprocessen en zorgen voor de juiste rapportage bij datalekken.</li>
+                </ul>
+                <img src="images/incident_response_team.png" alt="Illustratie van een cyberbeveiligingsincident response team" class="section-image">
+                <p>Deze functies zijn onderling verbonden en cruciaal voor een robuuste, proactieve beveiligingsaanpak die niet alleen detecteert en reageert, maar ook leert van incidenten om toekomstige dreigingen beter te voorkomen.</p>
+            </section>
+        </article>
     </main>
+
+    <footer>
+        <div class="container">
+            <p><strong>Conclusie:</strong> Stealer malware blijft een significante bedreiging in de cyberveiligheid. Door middel van een diepgaande analyse, inclusief een proof-of-concept, is duidelijk geworden hoe deze malware opereert door slim gebruik te maken van systeemeigen functionaliteiten. Effectieve verdediging vereist een gelaagde aanpak: geavanceerde EDR-oplossingen voor detectie, proactieve preventieve maatregelen zoals robuuste wachtwoordmanagers, en een goed geoefend incident response team. Alleen door deze elementen te combineren, kunnen organisaties hun digitale activa effectief beschermen en de veerkracht tegen evoluerende cyberdreigingen vergroten.</p>
+            <p class="small-text">Alle informatie is gebaseerd op onderzoek en analyse, met bronnen die de basis vormen voor de gepresenteerde inzichten.</p>
+        </div>
+    </footer>
 </body>
 </html>

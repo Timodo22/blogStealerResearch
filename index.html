@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hoe Stealer Malware Werkt – Blog</title>
+  <style>
+    :root {
+      --bg: #f9f9fc;
+      --text: #2a2a2a;
+      --accent: #4a90e2;
+      --card-bg: #ffffff;
+      --shadow: rgba(0, 0, 0, 0.05);
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 2rem;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+    }
+    h1 {
+      font-size: 2rem;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    section {
+      background: var(--card-bg);
+      padding: 1.5rem 2rem;
+      margin-bottom: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px var(--shadow);
+    }
+    h2 {
+      font-size: 1.4rem;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+    ul {
+      padding-left: 1.5rem;
+    }
+    li {
+      margin-bottom: 0.5rem;
+    }
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      color: #999;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Hoe Stealer Malware Werkt – en Hoe Je Het Detecteert</h1>
+
+    <section>
+      <h2>Inleiding</h2>
+      <p>
+        Stealer malware vormt een steeds groter wordende dreiging. Deze malware is ontworpen om gevoelige gegevens zoals wachtwoorden en sessietokens van systemen te stelen. In dit blog leg ik uit hoe het werkt, hoe je het herkent en wat je kunt doen om je te beschermen.
+      </p>
+    </section>
+
+    <section>
+      <h2>Wat is Stealer Malware?</h2>
+      <p>
+        Stealers zijn malware die zich richt op het stelen van inloggegevens en persoonlijke data. Ze worden vaak verspreid via phishing, nepsoftware of malvertising, en werken vaak fileless of als één enkel uitvoerbaar bestand.
+      </p>
+    </section>
+
+    <section>
+      <h2>Hoe Een Stealer Werkt (POC)</h2>
+      <ul>
+        <li><strong>1. Encryptiesleutel ophalen:</strong> via de Local State file en DPAPI</li>
+        <li><strong>2. Database kopiëren:</strong> SQLite 'Login Data'</li>
+        <li><strong>3. Decryptie uitvoeren:</strong> via AES-GCM</li>
+        <li><strong>4. Exfiltratie:</strong> via print() in demo, maar echte malware gebruikt HTTP of Discord</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Detectiemethoden</h2>
+      <ul>
+        <li><strong>EDR:</strong> zoals CrowdStrike, SentinelOne, Microsoft Defender</li>
+        <li><strong>Code-analyse:</strong> statisch met Ghidra of dynamisch in sandbox</li>
+        <li><strong>Memory-analyse:</strong> en YARA-regels voor patroonherkenning</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Bescherming</h2>
+      <ul>
+        <li>Gebruik betrouwbare wachtwoordmanagers zoals 1Password, NordPass</li>
+        <li>Beveilig endpoints volgens CIS Benchmarks</li>
+        <li>Train medewerkers op security awareness</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Conclusie</h2>
+      <p>
+        Stealer malware is geavanceerd, maar met inzicht in detectietechnieken en de juiste tools kunnen organisaties zich goed verdedigen. Mijn proof-of-concept en analyse geven een praktische kijk op hoe deze dreiging werkt en hoe je ze vroegtijdig kunt herkennen.
+      </p>
+    </section>
+
+    <footer>
+      Gemaakt door Timo van der Steen · 2025
+    </footer>
+  </div>
+</body>
+</html>

@@ -1,121 +1,227 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Hoe Stealer Malware Werkt – Blog</title>
-  <style>
-    :root {
-      --bg: #f9f9fc;
-      --text: #2a2a2a;
-      --accent: #4a90e2;
-      --card-bg: #ffffff;
-      --shadow: rgba(0, 0, 0, 0.05);
-    }
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    body {
-      font-family: "Segoe UI", sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.7;
-      padding: 2rem;
-    }
-    .container {
-      max-width: 800px;
-      margin: auto;
-    }
-    h1 {
-      font-size: 2rem;
-      color: var(--accent);
-      margin-bottom: 1rem;
-      text-align: center;
-    }
-    section {
-      background: var(--card-bg);
-      padding: 1.5rem 2rem;
-      margin-bottom: 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 5px 15px var(--shadow);
-    }
-    h2 {
-      font-size: 1.4rem;
-      color: var(--accent);
-      margin-bottom: 0.75rem;
-    }
-    ul {
-      padding-left: 1.5rem;
-    }
-    li {
-      margin-bottom: 0.5rem;
-    }
-    footer {
-      text-align: center;
-      margin-top: 3rem;
-      color: #999;
-      font-size: 0.9rem;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bescherm Jezelf Tegen Stealer Malware</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>Hoe Stealer Malware Werkt – en Hoe Je Het Detecteert</h1>
+    <header>
+        <h1>Bescherm Jezelf Tegen Stealer Malware: Een Diepgaande Blik op Detectie, Preventie en Incident Response</h1>
+    </header>
 
-    <section>
-      <h2>Inleiding</h2>
-      <p>
-        Stealer malware vormt een steeds groter wordende dreiging. Deze malware is ontworpen om gevoelige gegevens zoals wachtwoorden en sessietokens van systemen te stelen. In dit blog leg ik uit hoe het werkt, hoe je het herkent en wat je kunt doen om je te beschermen.
-      </p>
-    </section>
+    <main>
+        <p>Stealer malware vormt een ernstige bedreiging in het hedendaagse cyberlandschap. Deze kwaadaardige software is specifiek ontworpen om gevoelige informatie zoals wachtwoorden, cookies, creditcardgegevens en sessietokens te stelen. Dit onderzoek duikt diep in de werking van stealer malware, de detectiemethoden, preventieve maatregelen en de cruciale rol van incident response.</p>
 
-    <section>
-      <h2>Wat is Stealer Malware?</h2>
-      <p>
-        Stealers zijn malware die zich richt op het stelen van inloggegevens en persoonlijke data. Ze worden vaak verspreid via phishing, nepsoftware of malvertising, en werken vaak fileless of als één enkel uitvoerbaar bestand.
-      </p>
-    </section>
+        <section>
+            <h2>Wat is Stealer Malware en Hoe Werkt Het?</h2>
+            <p>Stealer malware is kwaadaardige software die persoonlijke en gevoelige informatie van computers steelt, vaak gericht op programma's zoals webbrowsers waar veel van deze data wordt opgeslagen[cite: 71, 72].</p>
 
-    <section>
-      <h2>Hoe Een Stealer Werkt (POC)</h2>
-      <ul>
-        <li><strong>1. Encryptiesleutel ophalen:</strong> via de Local State file en DPAPI</li>
-        <li><strong>2. Database kopiëren:</strong> SQLite 'Login Data'</li>
-        <li><strong>3. Decryptie uitvoeren:</strong> via AES-GCM</li>
-        <li><strong>4. Exfiltratie:</strong> via print() in demo, maar echte malware gebruikt HTTP of Discord</li>
-      </ul>
-    </section>
+            <h3>De Werking van Stealer Malware: Een Proof-of-Concept</h3>
+            <p>Om de werking van stealer malware te illustreren, is een proof-of-concept (POC) ontwikkeld die laat zien hoe wachtwoorden uit Microsoft Edge kunnen worden gestolen[cite: 73, 74]. Het proces omvat de volgende stappen:</p>
+            <ol>
+                <li><strong>Sleutel Ophalen:</strong> Microsoft Edge slaat wachtwoorden versleuteld op en gebruikt hiervoor een speciale encryptiesleutel die op zijn beurt weer versleuteld is met Windows-beveiliging[cite: 75]. Deze sleutel bevindt zich in het "Local State" bestand[cite: 77]. Het POC-script haalt deze sleutel op en gebruikt Windows DPAPI (Data Protection Application Programming Interface) om deze te ontsleutelen[cite: 78].</li>
+                <li><strong>Database Kopiëren:</strong> De versleutelde wachtwoorden zijn opgeslagen in een SQLite-database genaamd "Login Data"[cite: 80]. Om fouten te voorkomen, maakt het script eerst een kopie van dit bestand, aangezien de database mogelijk geopend is door de browser[cite: 81].</li>
+                <li><strong>Wachtwoorden Ontsleutelen:</strong> Uit de gekopieerde database haalt het script de URL, gebruikersnaam en het versleutelde wachtwoord[cite: 83]. Met behulp van de eerder opgehaalde sleutel en AES-GCM decryptie worden de wachtwoorden leesbaar gemaakt[cite: 84, 85].</li>
+                <li><strong>Gegevens Tonen (of Exfiltreren):</strong> In de POC worden de ontsleutelde wachtwoorden op het scherm getoond[cite: 86]. In een realistische aanvalsscenario zouden deze gegevens echter via exfiltratie naar een server van de aanvaller worden gestuurd[cite: 87]. Gangbare exfiltratiemethoden zijn HTTP-requests, Telegram/Discord-webhooks, e-mail of bestandsuploads naar de cloud[cite: 87].</li>
+            </ol>
+            <p>Deze POC toont aan dat stealer malware wachtwoorden uit Microsoft Edge kan stelen zonder extra rechten of toestemming, door gebruik te maken van technieken zoals het uitlezen van versleutelde bestanden, decryptie met DPAPI en AES, en toegang tot de browser-database[cite: 88, 89].</p>
 
-    <section>
-      <h2>Detectiemethoden</h2>
-      <ul>
-        <li><strong>EDR:</strong> zoals CrowdStrike, SentinelOne, Microsoft Defender</li>
-        <li><strong>Code-analyse:</strong> statisch met Ghidra of dynamisch in sandbox</li>
-        <li><strong>Memory-analyse:</strong> en YARA-regels voor patroonherkenning</li>
-      </ul>
-    </section>
+            <h3>Herkenbare Patronen in Stealer Malware</h3>
+            <p>Analyse van bestaande stealer malware toont diverse terugkerende patronen[cite: 57, 58]:</p>
+            <ul>
+                <li><strong>Gebruik van bekende binaries (Living off the Land):</strong> Veel stealers gebruiken bestaande Windows-componenten zoals PowerShell, cmd.exe, of MSHTA.exe om detectie te omzeilen en toegang te krijgen zonder nieuwe bestanden te downloaden[cite: 59, 60].</li>
+                <li><strong>Exfiltratie via standaardprotocolen:</strong> Data wordt vaak verzonden via HTTP(S) naar een command & control (C2) server, Telegram-bots (bijv. via API calls), Discord-webhooks of FTP/SFTP[cite: 61, 62].</li>
+                <li><strong>Targeten van specifieke applicaties:</strong> Stealers richten zich vaak op webbrowsers (Chrome, Firefox, Edge voor wachtwoorden, cookies, autofill), VPN- en RDP-software (OpenVPN, AnyDesk, TeamViewer), cryptowallets (Metamask, Exodus, en wallets in browserextensies), en gamingplatforms (Steam, Epic Games voor accounts en sessies)[cite: 63, 64].</li>
+                <li><strong>Minimalistische werking:</strong> Veel stealers zijn 'fileless' of kleine uitvoerbare bestanden (bijv. geschreven in C, Python of Go, vaak via PyInstaller) die snel data verzamelen en zichzelf verwijderen (self-delete of scheduled task cleanup)[cite: 65, 66].</li>
+                <li><strong>Gebruik van encryptie of Base64 voor exfiltratie:</strong> Om detectie door netwerkmonitoring te voorkomen, wordt data vaak versleuteld (bijv. AES) of gecodeerd (Base64) voor verzending[cite: 67].</li>
+                <li><strong>Verspreiding via phishing en trojan bundels:</strong> Stealers worden veelal verspreid via phishing-e-mails, nep-software cracks of keygens, "Download this tool"-campagnes via forums of YouTube, en malvertising[cite: 68].</li>
+                <li><strong>Constante evolutie en commodificatie:</strong> Er zijn veel "as-a-service" stealers zoals Raccoon Stealer, RedLine, Vidar en Lumma, die tegen betaling gepersonaliseerde stealers aanbieden inclusief C2-paneel en support[cite: 69].</li>
+            </ul>
+        </section>
 
-    <section>
-      <h2>Bescherming</h2>
-      <ul>
-        <li>Gebruik betrouwbare wachtwoordmanagers zoals 1Password, NordPass</li>
-        <li>Beveilig endpoints volgens CIS Benchmarks</li>
-        <li>Train medewerkers op security awareness</li>
-      </ul>
-    </section>
+        <section>
+            <h2>Detectie van Geavanceerde Obfuscatie- en Encryptietechnieken</h2>
+            <p>Moderne stealer malware is vaak ontworpen om onopgemerkt te blijven door obfuscatie (code verhulling) en encryptie (gegevensversleuteling)[cite: 91, 92].</p>
 
-    <section>
-      <h2>Conclusie</h2>
-      <p>
-        Stealer malware is geavanceerd, maar met inzicht in detectietechnieken en de juiste tools kunnen organisaties zich goed verdedigen. Mijn proof-of-concept en analyse geven een praktische kijk op hoe deze dreiging werkt en hoe je ze vroegtijdig kunt herkennen.
-      </p>
-    </section>
+            <h3>Analyse van Malware</h3>
+            <p>Detectie kan plaatsvinden via twee methoden:</p>
+            <ul>
+                <li><strong>Statische analyse:</strong> Hierbij wordt de code zelf bekeken met tools als Ghidra of dnSpy, op zoek naar typische malwarekenmerken zoals AES-versleuteling, Base64-decodering, en het gebruik van Windows-functies zoals CryptUnprotectData[cite: 102, 103].</li>
+                <li><strong>Dynamische analyse:</strong> De malware wordt uitgevoerd in een veilige testomgeving (sandbox/virtuele machine) om het gedrag te observeren: opent het gevoelige bestanden, maakt het verdachte netwerkverbindingen, of voert het decryptie uit in het geheugen[cite: 104, 105].</li>
+            </ul>
 
-    <footer>
-      Gemaakt door Timo van der Steen · 2025
-    </footer>
-  </div>
+            <h3>Detectiehulpmiddelen</h3>
+            <p>Beveiligingsteams gebruiken diverse hulpmiddelen om verborgen of versleutelde malware op te sporen[cite: 114]:</p>
+            <ul>
+                <li><strong>YARA-regels:</strong> Zoeken naar herkenbare patronen in malwarebestanden[cite: 115].</li>
+                <li><strong>Memory-analyse:</strong> Onderzoekt of een programma zichzelf of gegevens pas in het werkgeheugen (RAM) ontsleutelt[cite: 116].</li>
+                <li><strong>Logbestanden en gedragsanalyse:</strong> Tonen verdachte activiteiten zoals onverwachte toegang tot browserdata of vreemde netwerkverbindingen[cite: 117].</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Detectiemethoden: EDR-oplossingen</h2>
+            <p>Effectieve detectie van stealer malware vereist geavanceerde tools zoals Endpoint Detection and Response (EDR)-oplossingen. Hieronder een vergelijking van populaire EDR-oplossingen en hun effectiviteit tegen stealer malware[cite: 151]:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>EDR-oplossing</th>
+                        <th>Sterke punten t.o.v. stealer malware</th>
+                        <th>Zwakke punten / aandachtspunten</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Microsoft Defender for Endpoint</td>
+                        <td>- Strakke integratie met Windows en Active Directory<br>- Detecteert misbruik van DPAPI en toegang tot Edge/Chrome data<br>- Goede logging via Microsoft 365 Defender portal</td>
+                        <td>- Minder krachtig op niet-Windows endpoints (bijv. Linux/Mac)</td>
+                    </tr>
+                    <tr>
+                        <td>CrowdStrike Falcon</td>
+                        <td>- Cloudgebaseerde gedragsanalyse<br>- Sterk in het herkennen van script-based malware en info-stealers<br>- Lichtgewicht agent</td>
+                        <td>- Minder transparantie in hoe AI beslissingen maakt (black box effect)</td>
+                    </tr>
+                    <tr>
+                        <td>SentinelOne</td>
+                        <td>- Autonome AI detectie en rollback van kwaadaardige acties<br>- Herkent anomalieën in bestands- en netwerkgedrag<br>- Herkent veel stealer-technieken automatisch</td>
+                        <td>- Kan false positives genereren bij custom scripts</td>
+                    </tr>
+                    <tr>
+                        <td>Sophos Intercept X</td>
+                        <td>- Combinatie van signature-based en gedragstechnieken<br>- Herkent veelgebruikte API-aanroepen en file-access gedrag<br>- Goed bruikbaar in MKB-omgevingen</td>
+                        <td>- Minder uitgebreid in threat hunting zonder de XDR-extensie</td>
+                    </tr>
+                    <tr>
+                        <td>Bitdefender GravityZone</td>
+                        <td>- Sterke sandboxing en gedragsdetectie<br>- Herkent extractie van browserdata en toegang tot credential stores</td>
+                        <td>- UI kan overweldigend zijn voor kleinere teams zonder securitykennis</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>Deze EDR's bieden relevante bescherming tegen typische stealer malware technieken, zoals pogingen tot toegang tot Login Data bestanden, misbruik van Windows DPAPI, onverwachte netwerkactiviteit (exfiltratie), en de aanwezigheid van encryptie- of decryptieroutines in onbekende processen[cite: 128].</p>
+        </section>
+
+        <section>
+            <h2>Preventieve Maatregelen: Wachtwoordmanagers</h2>
+            <p>Naast technische detectie is preventie cruciaal. Het gebruik van "goede" wachtwoordmanagers kan een belangrijke preventieve maatregel zijn tegen credential harvesting[cite: 129].</p>
+
+            <h3>Criteria voor Evaluatie van Wachtwoordmanagers</h3>
+            <p>Wachtwoordmanagers worden beoordeeld op de volgende punten[cite: 130, 131, 132, 133, 134]:</p>
+            <ul>
+                <li><strong>Beveiligingseisen:</strong> Encryptie (AES-256), multi-factor authenticatie (MFA), en toegangsbeheer[cite: 130].</li>
+                <li><strong>Voldoen aan AVG, BIO, en NIS2:</strong> Gegevensminimalisatie, privacygaranties, transparantie, en auditmogelijkheden[cite: 131].</li>
+                <li><strong>Integratiemogelijkheden:</strong> Compatibiliteit met bestaande systemen zoals Active Directory (voor SSO), browsers en mobiele apparaten[cite: 132].</li>
+                <li><strong>Gebruiksvriendelijkheid:</strong> Eenvoudige bediening zonder uitgebreide training[cite: 133].</li>
+                <li><strong>Prijs:</strong> Vergelijking van abonnementen en licentiemodellen[cite: 134].</li>
+                <li><strong>Breached:</strong> Frequentie van datalekken[cite: 134].</li>
+            </ul>
+
+            <h3>Vergelijking van Wachtwoordmanagers</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>WachtwoordManager</th>
+                        <th>Beveiliging</th>
+                        <th>Voldoet aan NIS2/AVG</th>
+                        <th>Integratie (SSO/AD)</th>
+                        <th>Gebruikersvriendelijkheid</th>
+                        <th>Prijs (PM)</th>
+                        <th>Breached</th>
+                        <th>Notities</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>LastPass Business</td>
+                        <td>AES – 256, MFA toegangsbeheer</td>
+                        <td>Ja</td>
+                        <td>Ja, SSO, AD</td>
+                        <td>Minimale training</td>
+                        <td>5.20 euro</td>
+                        <td>2</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>1Password Business</td>
+                        <td>AES – 256, MFA toegangsbeheer</td>
+                        <td>Ja</td>
+                        <td>Ja, SSO, AD</td>
+                        <td>Standaard training</td>
+                        <td>7.99 euro</td>
+                        <td>0</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Keeper Security</td>
+                        <td>AES – 256, MFA toegangsbeheer</td>
+                        <td>Ja</td>
+                        <td>Ja beperkt</td>
+                        <td>Standaard training</td>
+                        <td>2,99 euro</td>
+                        <td>0 (wel een ander bedrijf bijna gebreacht)</td>
+                        <td>Gemaakt voor kleine bedrijven, in het verleden de files van een bedrijf helemaal blootgesteld</td>
+                    </tr>
+                    <tr>
+                        <td>MindYourPass</td>
+                        <td>AES – 256, MFA toegangsbeheer, rollen</td>
+                        <td>Ja</td>
+                        <td>Ja SSO, AD</td>
+                        <td>Minimaal tot geen training</td>
+                        <td>5,50 euro</td>
+                        <td>0</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Bitwarden</td>
+                        <td>AES – 256, MFA toegangsbeheer, rollen</td>
+                        <td>Ja</td>
+                        <td>Ja SSO</td>
+                        <td>Maximale training voor mensen die lastig met IT om kunnen gaan.</td>
+                        <td>6 euro</td>
+                        <td>3x in een dag</td>
+                        <td>Erg zwak bedrijf (en deels opensource)</td>
+                    </tr>
+                    <tr>
+                        <td>NordPass</td>
+                        <td>AES – 256, MFA toegangsbeheer, rollen</td>
+                        <td>Ja</td>
+                        <td>Ja SSO</td>
+                        <td>Minimale training</td>
+                        <td>6 euro</td>
+                        <td>0</td>
+                        <td>Ligt alleen niet in Eindhoven</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>Zowel MindYourPass als NordPass komen naar voren als sterke kandidaten die voldoen aan de eisen op het gebied van beveiliging, gebruiksvriendelijkheid, integratiemogelijkheden en naleving van wettelijke normen zoals AVG, BIO en NIS2[cite: 135, 136, 154].</p>
+        </section>
+
+        <section>
+            <h2>Incident Response: Een Proactieve Aanpak</h2>
+            <p>Een goed ingerichte incident response is essentieel. Dit omvat de volgende functies[cite: 28]:</p>
+            <ul>
+                <li><strong>SOC-Analist:</strong> Monitort netwerkverkeer, analyseert dreigingen en reageert op incidenten[cite: 18].</li>
+                <li><strong>Incident Responder:</strong> Reageert op beveiligingsincidenten en voert forensische analyses uit[cite: 19].</li>
+                <li><strong>Threat Intelligence Analyst:</strong> Onderzoekt cyberdreigingen en ontwikkelt verdedigingsstrategieën[cite: 20].</li>
+                <li><strong>Security Engineer:</strong> Ontwerpt en implementeert beveiligingsoplossingen zoals firewalls en endpoint protection[cite: 21].</li>
+                <li><strong>Compliance & Risk Manager:</strong> Zorgt voor naleving van regelgeving en implementeert risicobeheerprocessen[cite: 22].</li>
+            </ul>
+            <p>Deze functies zijn cruciaal voor een proactieve beveiligingsaanpak.</p>
+        </section>
+
+        <section>
+            <h2>Conclusie</h2>
+            <p>Dit onderzoek onderstreept dat stealer malware een serieuze dreiging vormt, gekenmerkt door gerichte en geavanceerde methoden voor het stelen van gevoelige gegevens zoals wachtwoorden, cookies en tokens[cite: 146, 147]. Door middel van hands-on analyse en een proof-of-concept is inzicht verkregen in de werking van deze malware, inclusief technieken zoals het misbruiken van Windows-functies (DPAPI), het versleutelen van data (AES-GCM), en exfiltratie via onopvallende communicatiekanalen[cite: 147].</p>
+            <p>Het belang van goed ingerichte detectie- en responsmechanismen is hierbij essentieel[cite: 150]. Geavanceerde EDR-oplossingen zoals CrowdStrike en SentinelOne bieden robuuste bescherming, terwijl Microsoft Defender for Endpoint zich onderscheidt door zijn sterke integratie met Windows-systemen[cite: 152]. Daarnaast dragen preventieve maatregelen, zoals het gebruik van wachtwoordmanagers, MFA, en veilige netwerkconfiguraties, bij aan het verkleinen van het aanvalsoppervlak[cite: 153].</p>
+            <p>Samenvattend benadrukt dit onderzoek de noodzaak van een proactieve beveiligingsaanpak, waarin technische detectiemethoden, bewustwording en goede tooling hand in hand gaan om dreigingen zoals stealer malware vroegtijdig te herkennen en effectief te mitigeren.</p>
+        </section>
+
+        <footer>
+            <p><strong>Bronnen:</strong> De referenties in de tekst verwijzen naar de oorspronkelijke documenten waar de informatie vandaan komt.</p>
+        </footer>
+    </main>
 </body>
 </html>

